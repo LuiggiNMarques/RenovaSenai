@@ -21,13 +21,185 @@ class AssistenteIAController {
     console.log('[Assistente IA] Constructor - groqModel:', this.groqModel, '| apiKey:', this.apiKey ? this.apiKey.substring(0, 10) + '...' : 'VAZIA');
     this.isGenerating = false;
     this.mensagens = [];
-    this._modoCoord = false; // Alterado pelo app.js quando logado como coordenador
+    this._modoCoord = false;
   }
+
+  isModoCoord() {
+    return !!(this._modoCoord || (window.auth && window.auth.isCoordenacao()));
+  }
+
+  atualizarChipsCoord() {
+    const isCoord = this.isModoCoord();
+    const btnMedia = document.querySelector('.assistente-chip-btn[data-action="media"]');
+    const btnResumo = document.querySelector('.assistente-chip-btn[data-action="resumo"]');
+    const input = document.getElementById('inputAssistenteMsg');
+
+    if (btnMedia) {
+      btnMedia.textContent = isCoord ? 'Média de todas as turmas' : 'Média da turma';
+    }
+    if (btnResumo) {
+      btnResumo.textContent = isCoord ? 'Resumo de todas as turmas' : 'Resumo geral';
+    }
+    if (input) {
+      input.placeholder = isCoord
+        ? 'Consulte médias, riscos ou turmas (ex: "puxar a média de todas as turmas")...'
+        : 'Digite sua pergunta sobre a turma...';
+    }
+  }
+
+  calcularMediasTodasTurmas() {
+    const turmas = (window.db?.data?.turmas || []).filter(t => t.status === 'EM_ANDAMENTO');
+    let totalAlunosGeral = 0;
+    let somaMediasGeral = 0;
+    let countMediasGeral = 0;
+    let somaFreqsGeral = 0;
+    let countFreqsGeral = 0;
+    let totalEmRiscoGeral = 0;
+
+    const linhas = turmas.map(t => {
+      const sintese = window.db ? window.db.getSinteseConsolidada(t.id, null) : null;
+      const alunos = sintese?.alunos || [];
+      const ativos = alunos.filter(a => a.aluno && a.aluno.statusMatricula === 'ATIVO');
+      const medias = ativos.filter(a => a.media > 0).map(a => a.media);
+      const freqs = ativos.map(a => a.freqPorcentagem);
+      const emRisco = ativos.filter(a => a.media < 70 || a.freqPorcentagem < 75).length;
+
+      const mediaNum = medias.length ? (medias.reduce((s, v) => s + v, 0) / medias.length) : 0;
+      const freqNum = freqs.length ? (freqs.reduce((s, v) => s + v, 0) / freqs.length) : 0;
+
+      if (mediaNum > 0) {
+        somaMediasGeral += mediaNum;
+        countMediasGeral++;
+      }
+      if (freqNum > 0) {
+        somaFreqsGeral += freqNum;
+        countFreqsGeral++;
+      }
+      totalAlunosGeral += ativos.length;
+      totalEmRiscoGeral += emRisco;
+
+      let situacao = '🟢 Satisfatório';
+      if (mediaNum < 70 || freqNum < 75) situacao = '🔴 Crítico';
+      else if (mediaNum < 75 || freqNum < 80) situacao = '🟡 Em Atenção';
+      else if (mediaNum >= 80) situacao = '🟢 Excelente';
+
+      return {
+        turma: t,
+        codigo: t.codigo,
+        nome: t.nome,
+        periodo: t.periodo,
+        totalAtivos: ativos.length,
+        media: mediaNum > 0 ? mediaNum.toFixed(1) : '-',
+        mediaNum,
+        freq: freqNum > 0 ? freqNum.toFixed(1) + '%' : '-',
+        freqNum,
+        emRisco,
+        situacao
+      };
+    });
+
+    const mediaInstitucional = countMediasGeral > 0 ? (somaMediasGeral / countMediasGeral).toFixed(1) : '-';
+    const freqInstitucional = countFreqsGeral > 0 ? (somaFreqsGeral / countFreqsGeral).toFixed(1) + '%' : '-';
+
+    return {
+      linhas,
+      totalAlunosGeral,
+      mediaInstitucional,
+      freqInstitucional,
+      totalEmRiscoGeral
+    };
+  }
+
+  gerarRelatorioMediasTodasTurmas() {
+    const resumo = this.calcularMediasTodasTurmas();
+    if (!resumo.linhas.length) {
+      return '❌ Não foram localizadas turmas ativas registradas no sistema acadêmico.';
+    }
+
+    let txt = '📊 **Relatório de Médias e Desempenho de Todas as Turmas**\n';
+    txt += '*Consolidação Oficial da Coordenação Pedagógica SENAI-SP*\n\n';
+    txt += '| Turma | Turno | Alunos Ativos | Média Geral | Freq. Média | Em Risco | Situação |\n';
+    txt += '| :--- | :---: | :---: | :---: | :---: | :---: | :---: |\n';
+
+    resumo.linhas.forEach(l => {
+      txt += `| **${l.codigo}** | ${l.periodo} | ${l.totalAtivos} | **${l.media}** | ${l.freq} | ${l.emRisco} | ${l.situacao} |\n`;
+    });
+
+    txt += '\n📈 **Métricas Globais Consolidadas:**\n';
+    txt += `- **Média Geral Institucional:** **${resumo.mediaInstitucional} pts** (Meta Regimental SENAI: 70.0 pts)\n`;
+    txt += `- **Frequência Média Institucional:** **${resumo.freqInstitucional}** (Mínimo Obrigatório: 75.0%)\n`;
+    txt += `- **Total de Estudantes Ativos:** **${resumo.totalAlunosGeral}** matriculados\n`;
+    txt += `- **Estudantes em Situação de Risco:** **${resumo.totalEmRiscoGeral}** aluno(s) com média < 70 ou freq < 75%\n\n`;
+
+    const turmasComMedia = resumo.linhas.filter(l => l.mediaNum > 0);
+    if (turmasComMedia.length > 0) {
+      const melhor = [...turmasComMedia].sort((a,b) => b.mediaNum - a.mediaNum)[0];
+      const atencao = [...turmasComMedia].sort((a,b) => a.mediaNum - b.mediaNum)[0];
+      txt += '💡 **Diagnóstico da Coordenação:**\n';
+      txt += `- **Destaque Acadêmico:** Turma **${melhor.codigo}** lidera com média de **${melhor.media} pts**.\n`;
+      if (melhor.codigo !== atencao.codigo) {
+        txt += `- **Intervenção Pedagógica:** Turma **${atencao.codigo}** (${atencao.media} pts) possui ${atencao.emRisco} estudante(s) em monitoramento prioritário.\n`;
+      }
+    }
+
+    return txt;
+  }
+
+  gerarResumoCoordTodasTurmas() {
+    const resumo = this.calcularMediasTodasTurmas();
+    let txt = '🏛️ **Panorama Geral de Todas as Turmas (Coordenação Pedagógica)**\n\n';
+    txt += `- **Total de Turmas em Andamento:** ${resumo.linhas.length}\n`;
+    txt += `- **Total Geral de Estudantes Ativos:** ${resumo.totalAlunosGeral}\n`;
+    txt += `- **Média Geral Institucional:** **${resumo.mediaInstitucional} pts** (Meta SENAI: 70.0)\n`;
+    txt += `- **Frequência Média Institucional:** **${resumo.freqInstitucional}**\n`;
+    txt += `- **Estudantes em Situação de Risco:** **${resumo.totalEmRiscoGeral}** aluno(s)\n\n`;
+    txt += '📋 **Médias por Turma:**\n';
+    resumo.linhas.forEach(l => {
+      txt += `- **${l.codigo}** (${l.periodo}): Média **${l.media}** | Freq **${l.freq}** | ${l.situacao}\n`;
+    });
+    txt += '\n*Dica: Clique no botão "Média de todas as turmas" para ver o quadro comparativo detalhado.*';
+    return txt;
+  }
+
+  gerarRiscoCoordTodasTurmas() {
+    const turmas = (window.db?.data?.turmas || []).filter(t => t.status === 'EM_ANDAMENTO');
+    let listaRisco = [];
+    turmas.forEach(t => {
+      const sintese = window.db ? window.db.getSinteseConsolidada(t.id, null) : null;
+      const alunos = sintese?.alunos || [];
+      alunos.filter(a => a.aluno && a.aluno.statusMatricula === 'ATIVO' && (a.media < 70 || a.freqPorcentagem < 80)).forEach(item => {
+        listaRisco.push({
+          turmaCodigo: t.codigo,
+          aluno: item.aluno,
+          media: item.media,
+          freq: item.freqPorcentagem,
+          faltas: item.faltas,
+          atrasos: item.atrasos
+        });
+      });
+    });
+
+    if (listaRisco.length === 0) {
+      return '🎉 **Excelente panorama!** Não há alunos em situação de risco cadastrados em nenhuma das turmas ativas.';
+    }
+
+    let txt = `⚠️ **Diagnóstico Global de Alunos em Risco (${listaRisco.length} identificados)**\n`;
+    txt += '*Critérios: Média < 70 ou Frequência < 80%*\n\n';
+    listaRisco.forEach((item, idx) => {
+      const alertaNota = item.media < 70 ? `Nota: **${item.media}**` : `Nota: ${item.media}`;
+      const alertaFreq = item.freq < 75 ? `Freq: **${item.freq}%** (Crítica)` : `Freq: ${item.freq}%`;
+      txt += `${idx + 1}. **${item.aluno.nome}** [${item.turmaCodigo}] - ${alertaNota} | ${alertaFreq} (${item.faltas} faltas, ${item.atrasos} atrasos)\n`;
+    });
+    txt += '\n📌 **Ação da Coordenação:** Encaminhar convocação aos responsáveis e agendar recuperação paralela.';
+    return txt;
+  }
+
 
   init() {
     this.carregarTurmasSelect();
     this.atualizarStatusChave();
     this.configurarEventos();
+    this.atualizarChipsCoord();
 
     // Se não houver mensagens no histórico, insere a de boas-vindas
     if (this.mensagens.length === 0) {
@@ -219,9 +391,9 @@ class AssistenteIAController {
     container.innerHTML = '';
     this.mensagens = [];
 
-    const isCoord = this._modoCoord || (window.auth && window.auth.isCoordenacao());
+    const isCoord = this.isModoCoord();
     const textoBoasVindas = isCoord
-      ? 'Olá! Sou o Assistente Técnico Pedagógico da Coordenação SENAI. Posso analisar o desempenho de todas as turmas, índices de evasão, comparativos de frequência e relatórios operacionais. Como posso ajudar?'
+      ? 'Olá! Sou o Assistente Técnico Pedagógico da Coordenação SENAI. Posso puxar a média de todas as turmas, relatórios comparativos, índices de evasão e análises de risco. Como posso ajudar?'
       : 'Olá! Sou o assistente inteligente do Portal do Docente SENAI. Pergunte sobre a turma, frequência, notas, observações ou riscos. Como posso ajudar?';
     this.adicionarMensagem('bot', textoBoasVindas, false);
   }
@@ -301,7 +473,7 @@ class AssistenteIAController {
 
     // --- System prompt adaptado ao perfil ---
     let systemPrompt;
-    if (this._modoCoord) {
+    if (this.isModoCoord()) {
       // Dados de TODAS as turmas para o coordenador
       const todasTurmas = (window.db.data.turmas || []).filter(t => t.status === 'EM_ANDAMENTO').map(t => {
         const sintese = window.db.getSinteseConsolidada(t.id, null);
@@ -325,7 +497,7 @@ Diretrizes SENAI-SP:
 - Média mínima de aprovação: 70 pontos (escala 0-100).
 - Frequência mínima obrigatória: 75%. Abaixo disso o aluno é retido por faltas.
 - 5 atrasos geram obrigação de compensação formal.
-- Foco: evasão, desempenho por turma, risco pedagógico e relatórios operacionais.
+- Foco: evasão, desempenho por turma, risco pedagógico e relatórios operacionais.\n- Quando o coordenador perguntar sobre médias ou turmas, SEMPRE apresente a média de TODAS as turmas ativas e a MÉDIA GERAL institucional em uma tabela comparativa clara.
 - Use linguagem técnica e direta, com tabelas comparativas quando útil.
 - Sugira intervenções pedagógicas e ações de gestão quando necessário.
 
@@ -451,13 +623,27 @@ ${JSON.stringify(dadosContexto, null, 2)}`;
 
   // --- Motor Local Inteligente (Executado quando sem API Key ou Offline) ---
   gerarRespostaLocal(acaoTipo, textoUsuario) {
+    const isCoord = this.isModoCoord();
+    const acao = acaoTipo || this.inferirAcaoPorTexto(textoUsuario);
+
+    // Tratamento prioritário para o modo coordenador ou visão consolidada de todas as turmas
+    if (isCoord || this.turmaId === 'TODAS') {
+      if (acao === 'media' || acao === 'media_todas_turmas') {
+        return this.gerarRelatorioMediasTodasTurmas();
+      }
+      if (acao === 'resumo') {
+        return this.gerarResumoCoordTodasTurmas();
+      }
+      if (acao === 'risco') {
+        return this.gerarRiscoCoordTodasTurmas();
+      }
+    }
+
     const turma = window.db.getTurmaById(this.turmaId);
     const ucs = window.db.getUCsPorTurma(this.turmaId);
     const ucAtual = ucs.find(u => u.id === this.ucId) || ucs[0];
     const sintese = window.db.getSinteseConsolidada(this.turmaId, this.ucId);
     const alunos = sintese?.alunos || [];
-
-    const acao = acaoTipo || this.inferirAcaoPorTexto(textoUsuario);
 
     switch (acao) {
       case 'resumo': {
@@ -739,6 +925,9 @@ ${JSON.stringify(dadosContexto, null, 2)}`;
 
   inferirAcaoPorTexto(texto) {
     const t = texto.toLowerCase();
+    if (t.includes('todas as turmas') || t.includes('todas turmas') || t.includes('todas as médias') || t.includes('todas medias') || (this.isModoCoord() && (t.includes('média') || t.includes('media') || t.includes('desempenho') || t.includes('puxar')))) {
+      return 'media_todas_turmas';
+    }
     if (t.includes('resumo') || t.includes('geral') || t.includes('panorama')) return 'resumo';
     if (t.includes('risco') || t.includes('perigo') || t.includes('alerta')) return 'risco';
     if (t.includes('plano') || t.includes('ação') || t.includes('interven')) return 'plano';

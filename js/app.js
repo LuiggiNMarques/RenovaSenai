@@ -234,7 +234,6 @@ class AppController {
       return `
         <div class="course-card ${isConcluida ? 'card-concluida' : ''}">
           <div class="card-cover" style="background-image: url('${capaUrl}');">
-            <span class="card-badge badge-senai"><img src="img/senai-logo.png" alt="SENAI" class="card-senai-logo"></span>
             <span class="card-badge badge-tag-status">${t.periodo.toUpperCase()}</span>
             ${isConcluida ? '<span class="card-badge badge-concluida">CONCLUÍDA</span>' : ''}
           </div>
@@ -552,8 +551,11 @@ class AppController {
     if (btnNovaTurma) btnNovaTurma.style.display = isCoordenador ? 'flex' : 'none';
 
     // Adaptar system prompt do assistente IA para coordenação
-    if (isCoordenador && window.assistenteIAController) {
-      window.assistenteIAController._modoCoord = true;
+    if (window.assistenteIAController) {
+      window.assistenteIAController._modoCoord = isCoordenador;
+      if (typeof window.assistenteIAController.atualizarChipsCoord === 'function') {
+        window.assistenteIAController.atualizarChipsCoord();
+      }
     }
 
     // Se coordenador, navegar direto para a aba de coordenação

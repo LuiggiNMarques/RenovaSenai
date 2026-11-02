@@ -156,8 +156,8 @@ class ConfiguracoesService {
   }
 
   inicializarVLibras() {
-    // Verifica se o VLibras já foi carregado
-    if (window.VLibrasWidget) {
+    // Verifica se o VLibras já foi carregado (script cria window.VLibrasWidget e window.VLibras.Widget)
+    if (window.VLibrasWidget || (window.VLibras && window.VLibras.Widget)) {
       try {
         // Remove instância anterior se existir
         if (this.vlibrasInstance) {
@@ -165,7 +165,8 @@ class ConfiguracoesService {
         }
         
         // Inicializa o widget VLibras oficial
-        this.vlibrasInstance = new window.VLibrasWidget('https://vlibras.gov.br/app');
+        // O script cria window.VLibras.Widget como construtor
+        this.vlibrasInstance = new window.VLibras.Widget('https://vlibras.gov.br/app');
         console.log('[VLibras] Widget inicializado com sucesso');
       } catch (error) {
         console.error('[VLibras] Erro ao inicializar:', error);
@@ -188,7 +189,7 @@ class ConfiguracoesService {
       }
     }
     // Remove o elemento do widget se existir
-    const widget = document.querySelector('.vlibras-widget, [data-vlibras], .vlibras');
+    const widget = document.querySelector('.vw-plugin-wrapper, [vw], .vlibras');
     if (widget) widget.remove();
   }
 

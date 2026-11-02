@@ -809,7 +809,8 @@ body {
   position: relative;
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 8px;
   padding: 12px 14px;
 }
 

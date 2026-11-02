@@ -25,7 +25,8 @@
   <!-- jsPDF para exportação de PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
-  <!-- VLibras removido -->
+  <!-- VLibras - API Oficial de Tradução para Libras -->
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js" defer></script>
 </head>
 
 <body>
@@ -459,9 +460,9 @@
               <button type="button" class="modulo-card" onclick="window.app.abrirModuloDaTurma('ocorrencias')">
                 <div class="modulo-card-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
                   </svg>
                 </div>
                 <span class="modulo-card-label">Ocorrências</span>
@@ -476,7 +477,7 @@
                     <polyline points="12 6 12 12 16 14"></polyline>
                   </svg>
                 </div>
-                <span class="modulo-card-label">Compensar</span>
+                <span class="modulo-card-label">Compensação</span>
                 <span class="modulo-card-sub">Atrasos e ausências</span>
               </button>
 
@@ -518,12 +519,11 @@
               <!-- FECHAMENTO DE DIÁRIO -->
               <button type="button" class="modulo-card"
                 onclick="window.coordenadorController.abrirModalSolicitarFechamento(window.app.turmaAtiva ? window.app.turmaAtiva.id : null)">
-                <div class="modulo-card-icon" style="color:var(--primary);">
+                <div class="modulo-card-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="9 15 11 17 15 13"></polyline>
                   </svg>
                 </div>
                 <span class="modulo-card-label">Fechamento</span>
