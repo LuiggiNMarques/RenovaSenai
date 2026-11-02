@@ -1,0 +1,871 @@
+/**
+ * =============================================================================
+ * RENOVA SENAI — ESTILOS DO PORTAL DO COORDENADOR (coordenador.css)
+ * Design SENAI Red + Dark Industrial
+ * =============================================================================
+ */
+
+/* ─── SEÇÃO COORDENADOR ─────────────────────────────────────────────────────── */
+
+#tabSection_coordenador {
+  padding: 0;
+}
+
+/* Badge de role na sidebar */
+.sidebar-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 20px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.role-badge-coordenador {
+  background: linear-gradient(135deg, #c3161c, #9b111c);
+  color: white;
+}
+
+.role-badge-docente {
+  background: var(--bg-card-subtle);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+}
+
+/* ─── TOGGLE ROLE LOGIN ─────────────────────────────────────────────────────── */
+
+.login-role-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.role-toggle-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+}
+
+.role-toggle-btn:hover {
+  color: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.06);
+}
+
+.role-toggle-btn.active {
+  background: #c3161c;
+  color: white;
+  box-shadow: 0 3px 12px rgba(195,22,28,0.5);
+}
+
+.role-toggle-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* ─── HEADER DO PORTAL COORDENADOR ──────────────────────────────────────────── */
+
+.coord-portal-header {
+  background: linear-gradient(135deg, #1a0a0b 0%, #2d1215 50%, #1a0a0b 100%);
+  border-bottom: 2px solid #c3161c;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.coord-portal-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 20px,
+    rgba(195,22,28,0.03) 20px,
+    rgba(195,22,28,0.03) 21px
+  );
+}
+
+.coord-header-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+
+.coord-header-subtitle {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 3px;
+  position: relative;
+  z-index: 1;
+}
+
+.coord-header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+}
+
+/* ─── KPI CARDS ─────────────────────────────────────────────────────────────── */
+
+.coord-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 900px) {
+  .coord-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.coord-kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s ease;
+}
+
+.coord-kpi-card:hover {
+  border-color: var(--senai-red);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(195,22,28,0.12);
+}
+
+.coord-kpi-card.kpi-alert {
+  border-color: #f59e0b;
+  background: rgba(245,158,11,0.05);
+}
+
+.kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi-icon svg { width: 20px; height: 20px; }
+
+.kpi-icon-turmas { background: rgba(195,22,28,0.15); color: #c3161c; }
+.kpi-icon-alunos { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.kpi-icon-concluidas { background: rgba(16,185,129,0.15); color: #10b981; }
+.kpi-icon-fechamento { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+.kpi-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.kpi-label {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+/* ─── TABS COORDENADOR ──────────────────────────────────────────────────────── */
+
+.coord-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 24px;
+}
+
+.coord-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  border-radius: 6px 6px 0 0;
+  transition: all 0.2s;
+}
+
+.coord-tab-btn:hover { color: var(--text-main); background: var(--bg-card-subtle); }
+.coord-tab-btn.active { color: #c3161c; border-bottom-color: #c3161c; }
+
+.coord-tab-panel { display: none; }
+.coord-tab-panel.active { display: block; }
+
+/* ─── TABELA DE TURMAS ──────────────────────────────────────────────────────── */
+
+.coord-table-wrapper { overflow-x: auto; }
+
+.coord-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+.coord-table th {
+  padding: 11px 14px;
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-card-subtle);
+}
+
+.coord-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+  color: var(--text-main);
+}
+
+.coord-table tr:hover td { background: var(--bg-card-subtle); }
+
+/* ─── BADGES COORDENADOR ────────────────────────────────────────────────────── */
+
+.coord-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.badge-ativo { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+.badge-concluido { background: rgba(100,116,139,0.12); color: #94a3b8; border: 1px solid rgba(100,116,139,0.3); }
+.badge-aprovado { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+.badge-aguardando { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+.badge-aberto { background: rgba(100,116,139,0.1); color: #94a3b8; border: 1px solid var(--border-color); }
+.badge-periodo { background: rgba(59,130,246,0.1); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+
+/* ─── CARD DE FECHAMENTO ────────────────────────────────────────────────────── */
+
+.coord-fechamento-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.coord-fechamento-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s;
+}
+
+.coord-fechamento-card:hover {
+  border-color: rgba(245,158,11,0.4);
+  box-shadow: 0 4px 20px rgba(245,158,11,0.08);
+}
+
+.fechamento-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.fechamento-turma-code {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.fechamento-turma-nome {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.fechamento-metricas {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: var(--bg-card-subtle);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.fechamento-metrica {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;
+  flex: 1;
+}
+
+.metrica-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.metrica-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.metrica-alerta .metrica-val { color: #ef4444; }
+
+.fechamento-obs {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 10px 14px;
+  background: var(--bg-card-subtle);
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-style: italic;
+  border-left: 3px solid #f59e0b;
+}
+
+.fechamento-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* ─── EMPTY STATE ───────────────────────────────────────────────────────────── */
+
+.coord-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.coord-empty-state svg { opacity: 0.4; }
+.coord-empty-state p { font-size: 14px; }
+
+/* ─── MODAIS DO COORDENADOR ─────────────────────────────────────────────────── */
+
+.coord-modal-section-title {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 18px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Opção de conflito no select de docentes */
+.docente-conflito { color: #f59e0b !important; }
+
+/* ─── BANNER "SOLICITAR FECHAMENTO" (visível para docente) ─────────────────── */
+
+.coord-docente-fechamento-banner {
+  background: linear-gradient(135deg, rgba(195,22,28,0.08), rgba(195,22,28,0.03));
+  border: 1px solid rgba(195,22,28,0.2);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.docente-banner-text h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.docente-banner-text p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ─── SIDEBAR ITEM COORDENADOR ──────────────────────────────────────────────── */
+
+.nav-item-coord {
+  position: relative;
+}
+
+.nav-item-coord::after {
+  content: 'COORD';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  background: #c3161c;
+  color: white;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* ─── BANNER MODO OBSERVADOR DA COORDENAÇÃO (SOMENTE LEITURA) ─────────────── */
+
+.coord-readonly-banner {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.06) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-left: 4px solid #f59e0b;
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.coord-readonly-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(245, 158, 11, 0.2);
+  color: #d97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.coord-readonly-content {
+  flex: 1;
+}
+
+.coord-readonly-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #b45309;
+  margin-bottom: 3px;
+}
+
+[data-theme="dark"] .coord-readonly-title {
+  color: #fbbf24;
+}
+
+.coord-readonly-desc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-main);
+  opacity: 0.85;
+}
+
+.coord-readonly-back-btn {
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #b45309;
+}
+
+[data-theme="dark"] .coord-readonly-back-btn {
+  color: #fbbf24;
+}
+
+.coord-readonly-back-btn:hover {
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.readonly-coord-input {
+  background: rgba(0, 0, 0, 0.04) !important;
+  cursor: not-allowed !important;
+  opacity: 0.8 !important;
+}
+
+/* ─── VISÃO CURRICULAR HIERÁRQUICA (CURSOS -> UCs -> TURMAS COM SÍNTESE) ──── */
+
+.coord-course-selector-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.coord-course-pill {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.coord-course-pill:hover {
+  border-color: rgba(195, 22, 28, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.coord-course-pill.active {
+  border-color: #c3161c;
+  background: linear-gradient(135deg, rgba(195, 22, 28, 0.08), rgba(195, 22, 28, 0.02));
+  box-shadow: 0 4px 16px rgba(195, 22, 28, 0.15);
+}
+
+.coord-course-pill.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: #c3161c;
+}
+
+.coord-course-pill .pill-code {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #c3161c;
+  margin-bottom: 4px;
+}
+
+.coord-course-pill .pill-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+.coord-course-pill .pill-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.coord-tree-intro {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 22px;
+}
+
+.tree-intro-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #c3161c;
+  background: rgba(195, 22, 28, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.coord-tree-intro h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  color: var(--text-main);
+}
+
+.coord-tree-intro .badge-code {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-left: 6px;
+}
+
+.coord-tree-intro p {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Card da Disciplina / Unidade Curricular */
+.coord-uc-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  margin-bottom: 22px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.coord-uc-header {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.03), transparent);
+  border-bottom: 1px solid var(--border-color);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.uc-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.uc-modulo-badge {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: #c3161c;
+  color: white;
+}
+
+.uc-code {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: monospace;
+  color: var(--text-muted);
+}
+
+.uc-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-main);
+}
+
+.uc-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.uc-ch-badge, .uc-docente-badge {
+  background: var(--bg-card-subtle);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  font-size: 11.5px;
+}
+
+.coord-uc-body {
+  padding: 18px 20px;
+}
+
+.coord-uc-turmas-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.coord-uc-turmas-title .count-pill {
+  background: rgba(195, 22, 28, 0.1);
+  color: #c3161c;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+}
+
+.coord-uc-turmas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 16px;
+}
+
+/* Card da Turma dentro da Matéria */
+.coord-turma-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.coord-turma-card:hover {
+  border-color: rgba(195, 22, 28, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.turma-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.turma-card-code {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.turma-card-periodo {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.turma-card-docente {
+  font-size: 12px;
+  color: var(--text-main);
+  background: var(--bg-card);
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.turma-card-docente .docente-label {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Painel de Síntese da Turma */
+.turma-sintese-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.sintese-box-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.sintese-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.sintese-kpi-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sintese-kpi-item.kpi-alerta .kpi-num {
+  color: #dc2626 !important;
+}
+
+.sintese-kpi-item .kpi-num {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.sintese-kpi-item .kpi-txt {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.sintese-bar-track {
+  height: 5px;
+  background: rgba(0, 0, 0, 0.07);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.sintese-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.turma-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.turma-card-actions .btn {
+  flex: 1;
+  font-size: 11.5px;
+  padding: 7px 10px;
+}

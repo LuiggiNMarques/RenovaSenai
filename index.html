@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" data-font-size="normal">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal do Docente | SENAI São Paulo</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23c3161c'/><text x='16' y='23' font-size='22' font-family='sans-serif' font-weight='900' fill='white' text-anchor='middle'>S</text></svg>">
+
+  <!-- Tipografia Montserrat Oficial SENAI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <!-- Estilos da Aplicação -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/configuracoes.css">
+  <link rel="stylesheet" href="css/relatorios.css">
+  <link rel="stylesheet" href="css/assistente.css">
+  <link rel="stylesheet" href="css/coordenador.css?v=10">
+  <!-- jsPDF para exportação de PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
+  <!-- VLibras removido -->
+</head>
+
+<body>
+
+  <!-- =========================================================================
+       BARRA LATERAL (SIDEBAR) - Fora do wrapper para não ser afetada por filtros de acessibilidade
+       ========================================================================= -->
+  <aside id="sidebar" class="sidebar" style="display: none;">
+    <!-- Logo "S" Vermelho -->
+    <a href="javascript:void(0)" class="sidebar-logo" onclick="window.app.navegarPara('cursos')" title="Portal SENAI">
+      <img src="img/senai-logo.png" alt="SENAI" class="sidebar-senai-logo">
+    </a>
+
+    <!-- Lista de Módulos da Barra Lateral (Agrupada e Despoluída) -->
+    <nav class="sidebar-nav">
+      <!-- MODO DEFAULT: Cursos, Relatórios, Assistente, Perfil -->
+      <div id="sidebarModeDefault">
+        <!-- PORTAL DO COORDENADOR (visível só para coordenação) -->
+        <div id="sidebarCoordSection" style="display:none;">
+          <button type="button" class="nav-item nav-item-coord" data-target-tab="coordenador"
+            onclick="window.app.navegarPara('coordenador')" title="Portal do Coordenador">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+            </svg>
+            <span>Coordenação</span>
+          </button>
+          <div class="sidebar-divider"></div>
+        </div>
+
+        <!-- 1. Minhas Turmas / Cursos (Principal) -->
+        <button type="button" class="nav-item active" data-target-tab="cursos"
+          onclick="window.app.navegarPara('cursos')" title="Minhas Turmas / Cursos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+          </svg>
+          <span>Cursos</span>
+        </button>
+
+        <div class="sidebar-divider" title="Relatórios"></div>
+
+        <!-- 2. Relatórios (fixo na sidebar) -->
+        <button type="button" class="nav-item" data-target-tab="relatorios"
+          onclick="window.app.navegarPara('relatorios')" title="Relatórios Oficiais e Atas em PDF">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span>Relatórios</span>
+        </button>
+
+        <div class="sidebar-divider" title="Recursos"></div>
+
+        <!-- 3. Assistente IA -->
+        <button type="button" class="nav-item nav-item-ai" data-target-tab="assistente"
+          onclick="window.app.navegarPara('assistente')" title="Assistente IA (Groq + Llama 3.1)">
+          <div class="nav-item-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+              <circle cx="12" cy="5" r="2"></circle>
+              <path d="M12 7v4"></path>
+              <line x1="8" y1="16" x2="8" y2="16"></line>
+              <line x1="16" y1="16" x2="16" y2="16"></line>
+            </svg>
+            <span class="ai-badge-dot">IA</span>
+          </div>
+          <span>Assistente IA</span>
+        </button>
+
+        <!-- 4. Configurações / Meu Perfil -->
+        <button type="button" class="nav-item" data-target-tab="configuracoes"
+          onclick="window.app.navegarPara('configuracoes')" title="Meu Perfil e Configurações">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+            </path>
+          </svg>
+          <span>Perfil</span>
+        </button>
+      </div>
+
+      <!-- MODO TURMA: exibido quando uma turma está ativa -->
+      <div id="sidebarModeTurma" style="display:none;">
+        <!-- Botão Voltar para lista de turmas -->
+        <button type="button" class="nav-item nav-item-back" onclick="window.app.voltarParaCursos()"
+          title="Voltar para Minhas Turmas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Turmas</span>
+        </button>
+
+        <!-- Label da turma ativa -->
+        <div class="sidebar-turma-label">
+          <span id="sidebarTurmaCodigo">---</span>
+        </div>
+
+        <div class="sidebar-divider" title="Relatórios"></div>
+
+        <!-- Relatórios (sempre fixo) -->
+        <button type="button" class="nav-item" data-target-tab="relatorios"
+          onclick="window.app.navegarPara('relatorios')" title="Relatórios Oficiais e Atas em PDF">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span>Relatórios</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Botão Sair no Rodapé da Barra Lateral -->
+    <div class="sidebar-footer">
+      <button type="button" class="nav-item btn-logout" onclick="window.app.executarLogout()" title="Encerrar Sessão">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <div id="mainContentWrapper" class="main-content-wrapper">
+    <!-- =========================================================================
+       1. TELA DE LOGIN OFICIAL (PORTAL DO DOCENTE - DARK INDUSTRIAL HUD)
+       ========================================================================= -->
+    <div id="viewLoginScreen" class="login-page-body">
+      <!-- Cenário de Fundo (Backdrop de Oficina/Indústria + Vinheta + Canvas HUD) -->
+      <div class="bg-wrapper">
+        <div class="bg-image"></div>
+        <div class="bg-vignette"></div>
+        <canvas id="techCanvas" class="tech-canvas"></canvas>
+      </div>
+
+      <!-- Elementos HUD decorativos (Linha com nó, coordenadas 45697056, pontos e radar) -->
+      <div class="login-hud-decorations">
+        <div class="hud-line-top"></div>
+        <div class="hud-text-coords-top">45697056</div>
+        <div class="hud-text-coords-left">45697056</div>
+        <div class="hud-text-coords-bottom">45697056</div>
+        <div class="hud-grid-dots"></div>
+        <div class="hud-radar-circle"></div>
+      </div>
+
+      <!-- Centro da Tela de Login -->
+      <main class="login-wrapper">
+        <div class="portal-container">
+
+          <!-- Cabeçalho com Logotipo Oficial SENAI em Badge e Título -->
+          <header class="portal-header">
+            <div class="logo-box">
+              <img src="img/senai-logo.png" alt="SENAI" class="senai-badge-img">
+            </div>
+            <h1 class="portal-title">PORTAL DO <span class="title-bold">DOCENTE</span></h1>
+          </header>
+
+          <!-- Toggle Docente / Coordenador -->
+          <div class="login-role-toggle" id="loginRoleToggle">
+            <button type="button" class="role-toggle-btn active" id="roleToggleDocente"
+              onclick="window.app.selecionarRole('professor')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Entrar como Docente
+            </button>
+            <button type="button" class="role-toggle-btn" id="roleToggleCoordenador"
+              onclick="window.app.selecionarRole('coordenador')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" />
+                <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+              </svg>
+              Entrar como Coordenador
+            </button>
+          </div>
+
+          <!-- Formulário com Campos Lado a Lado -->
+          <form id="formLogin" class="portal-form"
+            onsubmit="event.preventDefault(); window.app.executarLogin(); return false;">
+            <div class="form-row">
+              <!-- Coluna 1: Usuário ou CPF -->
+              <div class="input-group">
+                <label for="inputLoginUsuario" class="input-label">USUÁRIO OU CPF</label>
+                <div class="input-control">
+                  <input type="text" id="inputLoginUsuario" class="portal-input" placeholder=""
+                    value="professor@senai.br" autocomplete="username" spellcheck="false" required>
+                </div>
+              </div>
+
+              <!-- Coluna 2: Senha com Toggle de Visualização e Caps Lock -->
+              <div class="input-group">
+                <label for="inputLoginSenha" class="input-label">SENHA</label>
+                <div class="input-control">
+                  <input type="password" id="inputLoginSenha" class="portal-input" placeholder="" value="123"
+                    autocomplete="current-password" required>
+                  <button type="button" id="btnTogglePass" class="btn-toggle-eye"
+                    onclick="window.app.togglePasswordVisibility()" aria-label="Mostrar ou ocultar senha" tabindex="-1">
+                    <!-- Eye Open -->
+                    <svg class="eye-icon eye-show" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <!-- Eye Closed -->
+                    <svg class="eye-icon eye-hide" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path
+                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                      </path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                  </button>
+                </div>
+
+                <div id="capsLockIndicator" class="caps-indicator">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                    <path d="M12 2L4.5 11h5v7h5v-7h5L12 2zm-7 18h14v2H5v-2z" />
+                  </svg>
+                  <span>Caps Lock Ativado</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botão Vermelho Oficial ENTRAR -->
+            <button type="submit" id="btnSubmitLogin" class="btn-entrar" onclick="window.app.executarLogin()">
+              <span class="btn-text">ENTRAR</span>
+            </button>
+
+            <!-- Linha Divisória com Link Esqueceu a Senha -->
+            <div class="forgot-divider">
+              <button type="button" class="forgot-btn" onclick="window.app.abrirModalEsqueceuSenha()">
+                ESQUECEU A SENHA?
+              </button>
+            </div>
+          </form>
+
+          <!-- Botões Pílula (Acesso Rápido Demo e Guia de Instalação) -->
+          <div class="demo-access-wrap">
+            <button type="button" id="btnQuickDemo" class="btn-quick-demo" onclick="window.app.toggleMenuDemo(event)"
+              title="Clique para escolher perfil ou pressione Ctrl+D">
+              <span class="demo-icon">⚡</span> Acesso Rápido Demo
+            </button>
+
+            <!-- Menu Suspenso de Seleção de Perfis Demo -->
+            <div id="demoPopoverMenu" class="demo-popover-menu">
+              <div class="demo-popover-title">Selecione o perfil de teste:</div>
+              <button type="button" class="demo-profile-btn" onclick="window.app.preencherELogar('professor')">
+                <span>👨‍🏫</span>
+                <div>
+                  <strong>Docente Nathan</strong>
+                  <div style="font-size:10.5px; opacity:0.7">matosnathan2015@gmail.com</div>
+                </div>
+              </button>
+              <button type="button" class="demo-profile-btn" onclick="window.app.preencherELogar('coordenacao')">
+                <span>📋</span>
+                <div>
+                  <strong>Coordenação Paulo</strong>
+                  <div style="font-size:10.5px; opacity:0.7">coord.paulo@sp.senai.br</div>
+                </div>
+              </button>
+            </div>
+
+
+          </div>
+
+        </div>
+      </main>
+
+      <!-- Modal Esqueceu a Senha -->
+      <div id="modalEsqueceuSenha" class="login-modal-backdrop"
+        onclick="if(event.target===this) window.app.fecharModalEsqueceuSenha()">
+        <div class="login-modal-card">
+          <button type="button" class="login-modal-close"
+            onclick="window.app.fecharModalEsqueceuSenha()">&times;</button>
+          <div class="login-modal-header">
+            <div class="login-modal-icon">🔑</div>
+            <h2 class="login-modal-title">Recuperação de Acesso</h2>
+            <p class="login-modal-desc">Informe seu CPF ou e-mail institucional para receber as instruções de
+              redefinição.</p>
+          </div>
+          <form id="formRecuperarSenha" onsubmit="event.preventDefault(); window.app.enviarRecuperacaoSenha();">
+            <div class="input-group" style="margin-bottom: 18px;">
+              <label for="inputRecuperacao" class="input-label">CPF OU E-MAIL</label>
+              <div class="input-control">
+                <input type="text" id="inputRecuperacao" class="portal-input"
+                  placeholder="ex: 123.456.789-00 ou seu.email@sp.senai.br" required>
+              </div>
+            </div>
+            <button type="submit" id="btnEnviarRecuperacao" class="btn-entrar" style="height: 48px; font-size: 14px;">
+              ENVIAR INSTRUÇÕES
+            </button>
+          </form>
+          <div id="feedbackRecuperacao" class="login-modal-feedback hidden">
+            <div class="login-feedback-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <h3 class="login-feedback-title">Instruções Enviadas!</h3>
+            <p class="login-feedback-text">Um link seguro de redefinição foi encaminhado ao e-mail cadastrado no sistema
+              acadêmico.</p>
+            <button type="button" class="btn-modal-subtle" onclick="window.app.fecharModalEsqueceuSenha()">Voltar ao
+              Login</button>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- =========================================================================
+       2. APLICAÇÃO PRINCIPAL / PORTAL DO DOCENTE (LAYOUT DOCK SENAI)
+       ========================================================================= -->
+    <div id="viewPortalScreen" class="app-layout" style="display: none;">
+
+      <!-- CONTEÚDO PRINCIPAL (DENTRO DO CARTÃO CANVAS BRANCO ARREDONDADO) -->
+      <main class="main-wrapper">
+        <div class="content-card-canvas">
+
+          <!-- BARRA SUPERIOR DO CANVAS (INFO + NOTIFICAÇÕES + USUÁRIO NATHAN SANTANA MATOS) -->
+          <header class="canvas-header">
+            <div class="canvas-header-left">
+              <button type="button" class="btn-info-circle"
+                onclick="window.app.mostrarAlertaModal('Informações do Sistema', 'Portal do Docente SENAI-SP (Renova SENAI)\nVersão 2.4 - Gestão Acadêmica Integrada\nUnidade: Escola SENAI Roberto Simonsen (Brás)')"
+                title="Informações do Portal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+              </button>
+              <span class="portal-tag-pill">Portal do Docente &bull; SENAI-SP</span>
+            </div>
+
+            <div class="canvas-header-right">
+              <!-- Sino de Notificações -->
+              <button type="button" class="header-action-btn"
+                onclick="window.app.mostrarAlertaModal('Notificações Acadêmicas', '• 1 Notificação da Coordenação: Atestado do aluno Carlos homologado.\n• 1 Alerta de atrasos: Aluno Enzo atingiu 5 atrasos na UC-04.')"
+                title="Notificações">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="notification-badge"></span>
+              </button>
+
+              <!-- Engrenagem que leva para Configurações / Meu Perfil -->
+              <button type="button" class="header-action-btn" onclick="window.app.navegarPara('configuracoes')"
+                title="Configurações e Meu Perfil">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                  </path>
+                </svg>
+              </button>
+
+              <!-- Card de Perfil do Usuário (NM / Nathan Santana Matos) idêntico à imagem 4 -->
+              <div class="user-profile-widget" onclick="window.app.navegarPara('configuracoes')"
+                title="Acessar Meu Perfil">
+                <div id="headerUserInitials" class="user-avatar-initials">NM</div>
+                <div class="user-profile-info">
+                  <span id="headerUserName" class="user-name">NATHAN SANTANA MATOS</span>
+                  <span id="headerUserEmail" class="user-email">matosnathan2015@gmail.com</span>
+                </div>
+              </div>
+            </div>
+          </header>
+
+
+          <!-- ===================================================================
+             ABA 1: MEUS CURSOS / TURMAS (INSPIRADO NO LAYOUT DO PORTAL OFICIAL)
+             =================================================================== -->
+          <!-- =============================================
+             TELA DE DETALHE DE TURMA (Cards Visuais)
+             ============================================= -->
+          <section id="tabSection_turma" class="tab-view-section" style="display: none;">
+            <!-- Header da turma -->
+            <div class="turma-detalhe-header">
+              <div class="turma-detalhe-info">
+                <div class="turma-detalhe-badge" id="turmaDethPeriodo">PERÍODO</div>
+                <h2 class="turma-detalhe-nome" id="turmaDethNome">Nome da Turma</h2>
+                <div class="turma-detalhe-sub" id="turmaDethSub">Informações da turma</div>
+              </div>
+            </div>
+
+            <!-- Seção: Gestão de Turma -->
+            <div style="margin-bottom: 12px; margin-top: 8px;">
+              <span
+                style="font-size:0.7rem; font-weight:700; letter-spacing:1px; color:var(--text-muted); text-transform:uppercase;">Gestão
+                de Turma</span>
+            </div>
+            <div class="turma-modulos-grid" style="margin-bottom: 28px;">
+
+              <!-- DIÁRIO -->
+              <button type="button" class="modulo-card" onclick="window.app.abrirModuloDaTurma('diario')">
+                <div class="modulo-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                </div>
+                <span class="modulo-card-label">Diário</span>
+                <span class="modulo-card-sub">Frequência e presenças</span>
+              </button>
+
+              <!-- SUBTURMAS -->
+              <button type="button" class="modulo-card" onclick="window.app.abrirModuloDaTurma('subturmas')">
+                <div class="modulo-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+                <span class="modulo-card-label">Subturmas</span>
+                <span class="modulo-card-sub">Divisão de grupos</span>
+              </button>
+
+              <!-- OCORRÊNCIAS -->
+              <button type="button" class="modulo-card" onclick="window.app.abrirModuloDaTurma('ocorrencias')">
+                <div class="modulo-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                </div>
+                <span class="modulo-card-label">Ocorrências</span>
+                <span class="modulo-card-sub">Carômetro e alertas</span>
+              </button>
+
+              <!-- COMPENSAR -->
+              <button type="button" class="modulo-card" onclick="window.app.abrirModuloDaTurma('compensacoes')">
+                <div class="modulo-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <span class="modulo-card-label">Compensar</span>
+                <span class="modulo-card-sub">Atrasos e ausências</span>
+              </button>
+
+            </div>
+
+            <!-- Seção: Avaliações -->
+            <div style="margin-bottom: 12px;">
+              <span
+                style="font-size:0.7rem; font-weight:700; letter-spacing:1px; color:var(--text-muted); text-transform:uppercase;">Avaliações</span>
+            </div>
+            <div class="turma-modulos-grid">
+
+              <!-- NOTAS -->
+              <button type="button" class="modulo-card" onclick="window.app.abrirModuloDaTurma('notas')">
+                <div class="modulo-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <polygon
+                      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                    </polygon>
+                  </svg>
+                </div>
+                <span class="modulo-card-label">Notas</span>
+                <span class="modulo-card-sub">Lançamento e médias</span>
+              </button>
+
+              <!-- SÍNTESE -->
+              <button type="button" class="modulo-card" onclick="window.app.abrirModuloDaTurma('sintese')">
+                <div class="modulo-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M18 20V10"></path>
+                    <path d="M12 20V4"></path>
+                    <path d="M6 20v-6"></path>
+                  </svg>
+                </div>
+                <span class="modulo-card-label">Síntese</span>
+                <span class="modulo-card-sub">Desempenho geral</span>
+              </button>
+
+              <!-- FECHAMENTO DE DIÁRIO -->
+              <button type="button" class="modulo-card"
+                onclick="window.coordenadorController.abrirModalSolicitarFechamento(window.app.turmaAtiva ? window.app.turmaAtiva.id : null)">
+                <div class="modulo-card-icon" style="color:var(--primary);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                  </svg>
+                </div>
+                <span class="modulo-card-label">Fechamento</span>
+                <span class="modulo-card-sub">Solicitar à Coordenação</span>
+              </button>
+
+            </div>
+          </section>
+
+          <section id="tabSection_cursos" class="tab-view-section">
+            <!-- Banner Vermelho Oficial com Boas-vindas (Imagem 1) -->
+            <div class="senai-welcome-banner">
+              <h2 id="bannerWelcomeName" class="banner-title">Bem-vindo(a) de volta, NATHAN! ✨</h2>
+              <p class="banner-subtitle">
+                Acompanhe seu aprendizado e mergulhe no conhecimento de forma simples e prática. Gerencie turmas,
+                diários
+                de classe, avaliações e frequências com eficiência.
+              </p>
+            </div>
+
+            <!-- Título e Abas de Filtro -->
+            <div class="section-header-row">
+              <h2 class="section-main-title">
+                Minhas Turmas <span class="section-count-badge">(3)</span>
+              </h2>
+
+              <div class="search-input-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" placeholder="Buscar por turma ou curso...">
+              </div>
+            </div>
+
+            <!-- Abas de Navegação -->
+            <div class="filter-tabs-group">
+              <button type="button" class="tab-btn active">Em andamento</button>
+              <button type="button" class="tab-btn">Histórico / Concluídas</button>
+              <button type="button" class="tab-btn">Todas</button>
+            </div>
+
+            <!-- Grid de Cards de Turmas / Cursos -->
+            <div id="turmasCardsGrid" class="cards-grid">
+              <!-- Preenchido dinamicamente via app.js -->
+            </div>
+          </section>
+
+
+          <!-- ===================================================================
+             PORTAL DO COORDENADOR
+             =================================================================== -->
+          <section id="tabSection_coordenador" class="tab-view-section" style="display: none;">
+
+            <!-- Header Principal -->
+            <div class="coord-portal-header">
+              <div>
+                <div class="coord-header-title">&#128203; Portal do Coordenador</div>
+                <div class="coord-header-subtitle">Escola SENAI Roberto Simonsen &bull; Gestão Acadêmica Integrada</div>
+              </div>
+              <div class="coord-header-actions">
+                <button type="button" class="btn btn-outline btn-sm"
+                  onclick="window.coordenadorController.abrirModalSolicitarFechamento()" id="btnSolicitarFechamento"
+                  style="display:none;" title="Solicitar fechamento do diário">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                  </svg>
+                  Solicitar Fechamento do Diário
+                </button>
+                <button type="button" class="btn btn-primary" id="btnNovaTurmaCoord"
+                  onclick="window.coordenadorController.abrirModalNovaTurma()" title="Criar nova turma">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  Nova Turma
+                </button>
+              </div>
+            </div>
+
+            <!-- KPIs -->
+            <div class="coord-kpi-grid" id="coordDashboardCards"></div>
+
+            <!-- Tabs -->
+            <div class="coord-tabs">
+              <button type="button" class="coord-tab-btn active" data-coord-tab="curricular"
+                onclick="window.app.switchCoordTab('curricular')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                </svg>
+                Cursos &bull; Matérias &bull; Síntese
+              </button>
+              <button type="button" class="coord-tab-btn" data-coord-tab="turmas"
+                onclick="window.app.switchCoordTab('turmas')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                  <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                </svg>
+                Gestão de Turmas
+              </button>
+              <button type="button" class="coord-tab-btn" data-coord-tab="fechamento"
+                onclick="window.app.switchCoordTab('fechamento')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                Aprovação de Diários
+              </button>
+            </div>
+
+            <!-- Painel Estrutura Curricular (Cursos -> Matérias -> Turmas com Síntese) -->
+            <div id="coordPanelCurricular" class="coord-tab-panel active">
+              <div id="coordCurricularExplorer"></div>
+            </div>
+
+            <!-- Painel Turmas -->
+            <div id="coordPanelTurmas" class="coord-tab-panel">
+              <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; gap:10px; flex-wrap:wrap;">
+                <div class="filter-tabs-group" id="coordTurmasTabsGroup" style="margin-bottom:0; border:none; gap:8px;">
+                  <button type="button" class="tab-btn active" data-filtro="EM_ANDAMENTO"
+                    onclick="window.coordenadorController.filtrarTurmas('EM_ANDAMENTO')">Em Andamento</button>
+                  <button type="button" class="tab-btn" data-filtro="CONCLUIDA"
+                    onclick="window.coordenadorController.filtrarTurmas('CONCLUIDA')">Concluídas</button>
+                  <button type="button" class="tab-btn" data-filtro="TODOS"
+                    onclick="window.coordenadorController.filtrarTurmas('TODOS')">Todas</button>
+                </div>
+              </div>
+              <div id="coordTurmasLista"></div>
+            </div>
+
+            <!-- Painel Fechamento -->
+            <div id="coordPanelFechamento" class="coord-tab-panel">
+              <div class="coord-fechamento-list" id="coordFechamentoLista"></div>
+            </div>
+
+          </section>
+
+
+          <!-- ===================================================================
+              ABA 2: DIÁRIO DE CLASSE - CHAMADA SIMPLES E DIRETA
+              =================================================================== -->
+          <section id="tabSection_diario" class="tab-view-section" style="display: none;">
+            <!-- Header simples com controles essenciais -->
+            <div class="diario-header-simple">
+              <div class="diario-header-left">
+                <h2 class="section-main-title">Chamada</h2>
+                <span id="diarioInfoTurma" class="diario-info-badge">Selecione a turma e data</span>
+              </div>
+              <div class="diario-header-right">
+                <button type="button" class="btn btn-secondary btn-sm"
+                  onclick="window.diarioController.marcarTodosComoComparecimento()">
+                  Todos [C]
+                </button>
+                <button type="button" class="btn btn-primary" onclick="window.diarioController.salvarChamada()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                  </svg>
+                  Salvar
+                </button>
+              </div>
+            </div>
+
+            <!-- Filtros essenciais apenas: Turma, UC, Data, Subturma -->
+            <div class="diario-filters-simple">
+              <div class="filter-field">
+                <label>Turma</label>
+                <select id="selectDiarioTurma" class="filter-select"
+                  onchange="window.diarioController.onTurmaChange(this.value)"></select>
+              </div>
+              <div class="filter-field">
+                <label>Unidade Curricular</label>
+                <select id="selectDiarioUC" class="filter-select"
+                  onchange="window.diarioController.onUCChange(this.value)"></select>
+              </div>
+              <div class="filter-field filter-field-week" style="grid-column: 1 / -1;">
+                <div class="diario-week-header-row">
+                  <div class="diario-week-title-box">
+                    <label class="diario-week-label">Semana da Chamada</label>
+                    <span class="diario-selected-date-display" id="diarioSelectedDateDisplay">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span id="calendarSelectedDateText">Hoje</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="diario-week-picker" id="diarioWeekPicker">
+                  <button type="button" class="btn-week-nav" onclick="window.diarioController.navegarSemana(-1)"
+                    title="Semana anterior" aria-label="Semana anterior">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                  </button>
+                  <button type="button" class="btn-week-nav btn-hoje" onclick="window.diarioController.irParaHoje()"
+                    title="Esta semana" aria-label="Esta semana">Hoje</button>
+
+                  <div class="week-pills" id="diarioWeekPills" role="group" aria-label="Dias da semana"></div>
+
+                  <button type="button" class="btn-week-nav" onclick="window.diarioController.navegarSemana(1)"
+                    title="Próxima semana" aria-label="Próxima semana">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+
+                  <button type="button" class="btn-calendar-toggle-prominent" id="btnCalendarToggle"
+                    onclick="window.diarioController.toggleCalendarPopover(event)" aria-expanded="false"
+                    title="Abrir calendário para ver dias anteriores">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span>Calendário</span>
+                    <svg class="chevron-icon" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2.5">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+
+                  <!-- Painel do Calendário Completo: colado diretamente abaixo dos botões da semana -->
+                  <div class="calendar-popover" id="calendarPopover" role="dialog" aria-label="Selecionar data da aula"
+                    style="display: none;">
+                    <div class="calendar-popover-header">
+                      <div class="calendar-header-nav-group">
+                        <button type="button" class="calendar-nav-btn"
+                          onclick="window.diarioController.calendarNavMonth(-1)" aria-label="Mês anterior"
+                          title="Mês anterior">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                          </svg>
+                        </button>
+                        <div class="calendar-month-year" id="calendarMonthYear"></div>
+                        <button type="button" class="calendar-nav-btn"
+                          onclick="window.diarioController.calendarNavMonth(1)" aria-label="Próximo mês"
+                          title="Próximo mês">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                          </svg>
+                        </button>
+                      </div>
+                      <button type="button" class="calendar-close-btn"
+                        onclick="window.diarioController.closeCalendarPopover()" title="Fechar calendário"
+                        aria-label="Fechar">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2.5">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div class="calendar-quick-shortcuts">
+                      <button type="button" class="btn-cal-shortcut"
+                        onclick="window.diarioController.irParaUltimaAulaComChamada()"
+                        title="Ir para a aula mais recente que possui chamada registrada">
+                        ⏪ Última aula salva (21/10/2026)
+                      </button>
+                      <button type="button" class="btn-cal-shortcut"
+                        onclick="window.diarioController.calendarSelectToday()" title="Ir para a data de hoje">
+                        📅 Ir para Hoje
+                      </button>
+                    </div>
+
+                    <div class="calendar-weekdays" id="calendarWeekdays"></div>
+                    <div class="calendar-days" id="calendarDays"></div>
+
+                    <div class="calendar-popover-footer">
+                      <div class="calendar-legend-guide">
+                        <span class="cal-legend-tag"><span class="dot-has-chamada"></span> Chamada salva</span>
+                        <span class="cal-legend-tag"><span class="dot-selected"></span> Selecionado</span>
+                        <span class="cal-legend-tag"><span class="dot-today"></span> Hoje</span>
+                      </div>
+                      <div class="calendar-direct-picker">
+                        <label for="inputDiarioDataDirect" class="calendar-direct-label">Data específica:</label>
+                        <input type="date" id="inputDiarioDataDirect" class="calendar-direct-input"
+                          onchange="window.diarioController.calendarSelectDate(this.value)">
+                      </div>
+                    </div>
+                  </div>
+
+                  <input type="hidden" id="inputDiarioData" value="2026-10-22">
+                </div>
+              </div>
+              <div class="filter-field">
+                <label>Subturma</label>
+                <select id="selectDiarioSubturma" class="filter-select"
+                  onchange="window.diarioController.subturma = this.value; window.diarioController.carregarChamada();">
+                  <option value="TODOS">Turma Completa</option>
+                  <option value="A">Subturma A</option>
+                  <option value="B">Subturma B</option>
+                </select>
+              </div>
+              <div class="filter-field" style="align-self: flex-end;">
+                <label>Qtd. Aulas</label>
+                <select id="inputDiarioQtdAulas" class="filter-select"
+                  onchange="window.diarioController.quantidadeAulas = Number(this.value); window.diarioController.carregarChamada();">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4" selected>4</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Alerta de prazo (só aparece se for data antiga bloqueada) -->
+            <div id="diarioAlertaPrazo" class="academic-alert alert-warning" style="display:none;"></div>
+
+            <!-- Legenda compacta -->
+            <div class="diario-legenda-compacta">
+              <span class="legenda-item"><strong class="badge-C">C</strong> Presente</span>
+              <span class="legenda-item"><strong class="badge-F">F</strong> Falta</span>
+              <span class="legenda-item"><strong class="badge-A">A</strong> Atraso</span>
+              <span class="legenda-item"><strong class="badge-X">X</strong> Trancado</span>
+            </div>
+
+            <!-- Tabela de Chamada - FOCO PRINCIPAL -->
+            <div class="table-responsive">
+              <table class="academic-table diario-chamada-table">
+                <thead id="diarioChamadaTableHead">
+                  <tr id="diarioChamadaTableHeadRow"></tr>
+                </thead>
+                <tbody id="diarioChamadaTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+
+          <!-- ===================================================================
+              ABA 3: SUBTURMAS (DIVISÕES A E B - FASE 8)
+              =================================================================== -->
+          <section id="tabSection_subturmas" class="tab-view-section" style="display: none;">
+            <div class="section-header-row">
+              <div>
+                <h2 class="section-main-title">Gerenciamento de Subturmas (A e B)</h2>
+                <p style="font-size:13px; color:var(--text-muted);">
+                  Selecione os alunos da Subturma A; os demais vão automaticamente para a Subturma B. Edite manualmente
+                  a qualquer momento.
+                </p>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <select id="selectSubturmaTurma" class="filter-select"
+                  onchange="window.subturmasController.onTurmaChange(this.value)">
+                </select>
+                <button type="button" class="btn btn-primary btn-sm"
+                  onclick="window.subturmasController.iniciarSelecao()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                  </svg>
+                  Configurar Seleção (A)
+                </button>
+                <button type="button" class="btn btn-outline btn-sm"
+                  onclick="window.subturmasController.dividirAutomaticamente('pares_impares')">
+                  Pares / Ímpares
+                </button>
+                <button type="button" class="btn btn-outline btn-sm"
+                  onclick="window.subturmasController.dividirAutomaticamente('sequencial')">
+                  Sequencial
+                </button>
+                <button type="button" class="btn btn-outline btn-sm"
+                  onclick="window.subturmasController.dividirAutomaticamente('aleatorio')">
+                  Aleatório
+                </button>
+              </div>
+            </div>
+
+            <!-- Barra de Ação de Seleção (aparece no modo seleção) -->
+            <div id="subturmaSelectionBar" class="subturma-selection-bar" style="display:none;">
+              <div class="selection-bar-content">
+                <span class="selection-info">Modo Seleção: Marque os alunos para a <strong>Subturma A</strong>. Os não
+                  marcados irão para a <strong>Subturma B</strong>.</span>
+                <div style="display:flex; gap:10px;">
+                  <button type="button" class="btn btn-secondary btn-sm"
+                    onclick="window.subturmasController.cancelarSelecao()">
+                    Cancelar
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm"
+                    onclick="window.subturmasController.aplicarSelecao()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Aplicar e Dividir (A / B)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="subturmas-view-wrapper">
+              <!-- Coluna Subturma A -->
+              <div class="subturma-column">
+                <div class="subturma-header">
+                  <div>
+                    <span class="subturma-title-tag">Subturma A</span>
+                    <div style="font-size:12px; color:var(--text-muted);">Laboratório de Redes e Hardware &bull; Prof.
+                      Titular</div>
+                  </div>
+                  <span id="subturmaCountA" class="portal-tag-pill">0 alunos</span>
+                </div>
+                <div id="subturmaListA" class="subturma-students-list"></div>
+              </div>
+
+              <!-- Coluna Subturma B -->
+              <div class="subturma-column">
+                <div class="subturma-header">
+                  <div>
+                    <span class="subturma-title-tag">Subturma B</span>
+                    <div style="font-size:12px; color:var(--text-muted);">Laboratório de Software e Nuvem &bull; Prof.
+                      Adjunto</div>
+                  </div>
+                  <span id="subturmaCountB" class="portal-tag-pill">0 alunos</span>
+                </div>
+                <div id="subturmaListB" class="subturma-students-list"></div>
+              </div>
+            </div>
+          </section>
+
+
+          <!-- ===================================================================
+             ABA 4: OCORRÊNCIAS E CARÔMETRO (FASE 6)
+             =================================================================== -->
+          <section id="tabSection_ocorrencias" class="tab-view-section" style="display: none;">
+            <div class="section-header-row">
+              <div>
+                <h2 class="section-main-title">Carômetro e Ocorrências Disciplinares</h2>
+                <p style="font-size:13px; color:var(--text-muted);">
+                  Identificação visual dos discentes e registros acadêmicos categorizados por origem.
+                </p>
+              </div>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <select id="selectOcorrenciaTurma" class="filter-select"
+                  onchange="window.ocorrenciasController.onTurmaChange(this.value)">
+                  <!-- Preenchido dinamicamente -->
+                </select>
+                <!-- Alteração 1: Botão + Nova Ocorrência do topo removido. Abertura realizada pelo clique no card/foto do estudante -->
+              </div>
+            </div>
+
+            <!-- Filtros de Origem e Tipo de Visualização -->
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+              <div class="filter-tabs-group" style="margin-bottom:0; width:auto; border:none; gap:12px;">
+                <button type="button" class="tab-btn active"
+                  onclick="window.ocorrenciasController.setFiltroOrigem('TODAS')">Todas as Origens</button>
+                <button type="button" class="tab-btn"
+                  onclick="window.ocorrenciasController.setFiltroOrigem('COORDENACAO')">Coordenação</button>
+                <button type="button" class="tab-btn"
+                  onclick="window.ocorrenciasController.setFiltroOrigem('GERAL')">Geral</button>
+                <button type="button" class="tab-btn"
+                  onclick="window.ocorrenciasController.setFiltroOrigem('UNIDADE_CURRICULAR')">Unidade
+                  Curricular</button>
+              </div>
+
+              <div style="display:flex; gap:6px;">
+                <button type="button" id="btnViewCarometro" class="btn btn-sm btn-outline active"
+                  onclick="window.ocorrenciasController.setVisualizacao('carometro')">
+                  Carômetro (Fotos)
+                </button>
+                <button type="button" id="btnViewTabela" class="btn btn-sm btn-outline"
+                  onclick="window.ocorrenciasController.setVisualizacao('tabela')">
+                  Tabela Detalhada
+                </button>
+              </div>
+            </div>
+
+            <div id="ocorrenciasConteudo">
+              <!-- Preenchido dinamicamente via ocorrencias.js -->
+            </div>
+          </section>
+
+
+          <!-- ===================================================================
+              ABA 5: NOTAS E AVALIAÇÕES (FASE 7)
+              =================================================================== -->
+          <section id="tabSection_notas" class="tab-view-section" style="display: none;">
+            <div class="section-header-row">
+              <div>
+                <h2 class="section-main-title">Lançamento de Notas e Avaliações</h2>
+                <p style="font-size:13px; color:var(--text-muted);">
+                  Gestão de instrumentos avaliativos e cálculo automático de médias e situação acadêmica.
+                </p>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <button type="button" class="btn btn-primary" onclick="window.app.abrirModal('modalNovaAvaliacao')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  Nova Avaliação
+                </button>
+              </div>
+            </div>
+
+            <div class="diario-control-panel">
+              <div class="diario-filters-grid">
+                <div class="filter-field">
+                  <label class="filter-label">Turma</label>
+                  <select id="selectNotasTurma" class="filter-select"
+                    onchange="window.notasController.onTurmaChange(this.value)">
+                  </select>
+                </div>
+
+                <div class="filter-field">
+                  <label class="filter-label">Unidade Curricular</label>
+                  <select id="selectNotasUC" class="filter-select"
+                    onchange="window.notasController.onUCChange(this.value)">
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Resumo da Turma - Cards de Estatísticas -->
+            <div id="notasResumoCards" class="stats-cards-grid" style="margin-bottom: 24px;"></div>
+
+            <!-- Tabela de Notas Redesenhada -->
+            <div class="table-responsive modern-table-container">
+              <table class="academic-table modern-grades-table">
+                <thead id="notasTableHead"></thead>
+                <tbody id="notasTableBody"></tbody>
+              </table>
+            </div>
+
+            <!-- Legenda de Situação -->
+            <div id="notasLegenda" class="situacao-legenda" style="margin-top: 16px;"></div>
+          </section>
+
+
+          <!-- ===================================================================
+              ABA 6: SÍNTESE DO PROFESSOR (FASE 9)
+              =================================================================== -->
+          <section id="tabSection_sintese" class="tab-view-section" style="display: none;">
+            <div class="section-header-row">
+              <div>
+                <h2 class="section-main-title">Síntese Consolidada do Docente</h2>
+                <p style="font-size:13px; color:var(--text-muted);">
+                  Consolidação direta dos lançamentos acadêmicos sem redundância ou retrabalho.
+                </p>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <select id="selectSinteseTurma" class="filter-select"
+                  onchange="window.sinteseController.onTurmaChange(this.value)"></select>
+                <select id="selectSinteseUC" class="filter-select"
+                  onchange="window.sinteseController.onUCChange(this.value)"></select>
+              </div>
+            </div>
+
+            <div id="sinteseHeaderInfo" class="academic-alert alert-info"></div>
+
+            <!-- Cards de Resumo da Turma -->
+            <div id="sinteseResumoCards" class="stats-cards-grid" style="margin-bottom: 24px;"></div>
+
+            <!-- Tabela de Síntese Redesenhada -->
+            <div class="table-responsive modern-table-container">
+              <table class="academic-table modern-sintese-table">
+                <thead>
+                  <tr>
+                    <th style="width: 45px;">Nº</th>
+                    <th style="min-width: 220px;">Aluno</th>
+                    <th style="text-align:center; width: 70px;">Aulas</th>
+                    <th style="text-align:center; width: 90px;">Presenças</th>
+                    <th style="text-align:center; width: 90px;">Faltas</th>
+                    <th style="text-align:center; width: 90px;">Atrasos</th>
+                    <th style="text-align:center; width: 90px;">Dispensas</th>
+                    <th style="text-align:center; width: 100px;">Compensadas</th>
+                    <th style="text-align:center; width: 110px;">Freq. Total</th>
+                    <th style="text-align:center; width: 90px;">Média</th>
+                  </tr>
+                </thead>
+                <tbody id="sinteseTableBody"></tbody>
+              </table>
+            </div>
+
+            <!-- Legenda de Situação -->
+            <div id="sinteseLegenda" class="situacao-legenda" style="margin-top: 16px;"></div>
+          </section>
+
+
+          <!-- ===================================================================
+ABA 7: RELATÓRIOS OFICIAIS (FASE 9)
+              =================================================================== -->
+          <section id="tabSection_relatorios" class="tab-view-section" style="display: none;">
+            <div class="section-header-row">
+              <div>
+                <h2 class="section-main-title">Relatórios Acadêmicos Oficiais</h2>
+                <p style="font-size:13px; color:var(--text-muted);">
+                  Emissão de relatórios timbrados para acompanhamento pedagógico e auditoria escolar.
+                </p>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <button type="button" class="btn btn-primary" onclick="window.relatoriosController.exportarPDF()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Exportar PDF
+                </button>
+              </div>
+            </div>
+
+            <!-- Filtros de Relatórios -->
+            <div class="diario-control-panel">
+              <div class="diario-filters-grid">
+                <div class="filter-field">
+                  <label class="filter-label">Tipo de Relatório</label>
+                  <select id="selectTipoRelatorio" class="filter-select"
+                    onchange="window.relatoriosController.onTipoRelatorioChange(this.value)">
+                    <option value="frequencia">1. Relatório de Controle de Frequência</option>
+                    <option value="rendimento">2. Relatório de Rendimento Escolar</option>
+                    <option value="conteudo">3. Relatório de Conteúdo das Aulas por Período</option>
+                    <option value="compensacao">4. Relatório de Compensação de Ausência</option>
+                  </select>
+                </div>
+
+                <div class="filter-field">
+                  <label class="filter-label">Turma</label>
+                  <select id="selectRelatorioTurma" class="filter-select"
+                    onchange="window.relatoriosController.onTurmaChange(this.value)"></select>
+                </div>
+
+                <div class="filter-field">
+                  <label class="filter-label">Unidade Curricular</label>
+                  <select id="selectRelatorioUC" class="filter-select"
+                    onchange="window.relatoriosController.onUCChange(this.value)"></select>
+                </div>
+              </div>
+            </div>
+          </section>
+
+
+
+
+
+          <!-- ===================================================================
+             ABA 9: COMPENSAÇÕES (FASE 6)
+             =================================================================== -->
+          <section id="tabSection_compensacoes" class="tab-view-section" style="display: none;">
+            <div class="section-header-row">
+              <div>
+                <h2 class="section-main-title">Compensação de Atrasos e Ausências</h2>
+                <p style="font-size:13px; color:var(--text-muted);">
+                  Acompanhamento e registro de cumprimento das obrigações geradas pelo acúmulo de 5 atrasos.
+                </p>
+              </div>
+              <!-- Alteração 6: Botão para inserção/definição manual de compensação pelo professor -->
+              <div style="display:flex; gap:10px; align-items:center;">
+                <button type="button" class="btn btn-primary"
+                  onclick="window.compensacoesController.abrirModalNovaCompensacao()">
+                  + Nova Compensação
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="academic-table">
+                <thead>
+                  <tr>
+                    <th>Aluno</th>
+                    <th>Origem da Obrigação</th>
+                    <th>Situação</th>
+                    <th>Atividade Complementar</th>
+                    <th style="text-align: right;">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="compensacoesTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+
+          <!-- ===================================================================
+             ABA 10: CONFIGURAÇÕES E MEU PERFIL (EXATAMENTE COMO NAS IMAGENS 4 E 5)
+             "APENAS A ABA DE CONFIGURAÇOES DEVE SER IGUAL A DA IMAGEM"
+             =================================================================== -->
+          <section id="tabSection_configuracoes" class="tab-view-section" style="display: none;">
+
+            <!-- BANNER PRETO COM PADRÃO DE GRADE -->
+            <div class="settings-profile-banner" id="settingsProfileBanner">
+              <div class="banner-content">
+                <h1 class="banner-title">Meu perfil</h1>
+                <p class="banner-subtitle">Atualize suas informações básicas de perfil. ✨</p>
+
+                <div class="profile-info">
+                  <div class="profile-avatar" id="profileAvatar">
+                    <span class="avatar-initials" id="avatarInitials">NM</span>
+                  </div>
+                  <div class="profile-details">
+                    <h2 class="profile-name" id="profileName">NATHAN SANTANA MATOS</h2>
+                    <p class="profile-email" id="profileEmail">matosnathan2015@gmail.com</p>
+                    <div class="profile-meta">
+                      <span class="profile-badge" id="profileRole">PROFESSOR</span>
+                      <span class="profile-matricula" id="profileRegistration">SENAI-DOC-2026-089</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="profile-actions">
+                  <button type="button" class="btn-change-password"
+                    onclick="window.app.abrirModal('modalAlterarSenha')">
+                    Alterar senha
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <line x1="7" y1="17" x2="17" y2="7"></line>
+                      <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- SEÇÃO TEMAS: SISTEMA, CLARO, ESCURO (IDÊNTICO À IMAGEM 4) -->
+            <div class="settings-section">
+              <h2 class="settings-section-title">Temas</h2>
+              <p class="settings-section-desc">Personalize a aparência do seu portal com o tema ideal.</p>
+
+              <div class="themes-cards-grid">
+
+                <!-- Card: Sistema (Split 50% escuro / 50% claro) -->
+                <div class="theme-card-option" data-theme-choice="sistema"
+                  onclick="window.configuracoes.definirTema('sistema')">
+                  <div class="theme-mockup-frame">
+                    <div class="mockup-sistema">
+                      <div class="mockup-sistema-dark">
+                        <div class="mockup-bar-header"></div>
+                        <div class="mockup-bar-body"></div>
+                        <div class="mockup-bar-sub"></div>
+                      </div>
+                      <div class="mockup-sistema-light">
+                        <div class="mockup-bar-header"></div>
+                        <div class="mockup-bar-body"></div>
+                        <div class="mockup-bar-sub"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="theme-card-label">
+                    <span>Sistema</span>
+                    <svg class="theme-active-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Card: Claro (White Mockup) -->
+                <div class="theme-card-option" data-theme-choice="claro"
+                  onclick="window.configuracoes.definirTema('claro')">
+                  <div class="theme-mockup-frame">
+                    <div class="mockup-claro">
+                      <div class="mockup-bar-header"></div>
+                      <div class="mockup-bar-body"></div>
+                      <div class="mockup-bar-sub"></div>
+                    </div>
+                  </div>
+                  <div class="theme-card-label">
+                    <span>Claro</span>
+                    <svg class="theme-active-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Card: Escuro (Dark Navy Mockup) -->
+                <div class="theme-card-option" data-theme-choice="escuro"
+                  onclick="window.configuracoes.definirTema('escuro')">
+                  <div class="theme-mockup-frame">
+                    <div class="mockup-escuro">
+                      <div class="mockup-bar-header"></div>
+                      <div class="mockup-bar-body"></div>
+                      <div class="mockup-bar-sub"></div>
+                    </div>
+                  </div>
+                  <div class="theme-card-label">
+                    <span>Escuro</span>
+                    <svg class="theme-active-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+
+            <!-- SEÇÃO ACESSIBILIDADE (IDÊNTICA À IMAGEM 5) -->
+            <div class="settings-section" style="margin-top: 40px;">
+              <!-- Opção: Tamanho da Fonte -->
+              <div class="settings-card-item">
+                <div class="settings-item-left">
+                  <div class="setting-icon-badge badge-icon-font">Aa</div>
+                  <div class="setting-text-group">
+                    <span class="setting-item-title">Tamanho da fonte</span>
+                    <span class="setting-item-desc">Permite aumentar ou reduzir o tamanho dos textos para melhor
+                      leitura.</span>
+                  </div>
+                </div>
+                <div>
+                  <select id="selectTamanhoFonte" class="setting-select-control"
+                    onchange="window.configuracoes.definirTamanhoFonte(this.value)">
+                    <option value="pequeno">Pequeno</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="grande">Grande</option>
+                    <option value="extra-grande">Extra grande</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Seção Interação e Leitura -->
+              <h3 style="font-size:16px; font-weight:700; margin: 24px 0 14px 0; color:var(--text-main);">Interação e
+                leitura</h3>
+
+              <!-- Seção Opções de Visibilidade -->
+              <h3 style="font-size:16px; font-weight:700; margin: 24px 0 14px 0; color:var(--text-main);">Opções de
+                visibilidade</h3>
+
+              <!-- Opção: Modo Monocromático com Badge Cinza -->
+              <div class="settings-card-item">
+                <div class="settings-item-left">
+                  <div class="setting-icon-badge badge-icon-monocromatico">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 2a10 10 0 0 0 0 20z" fill="currentColor"></path>
+                    </svg>
+                  </div>
+                  <div class="setting-text-group">
+                    <span class="setting-item-title">Modo monocromático</span>
+                    <span class="setting-item-desc">Transforma as cores da tela em tons de cinza para melhor contraste e
+                      foco.</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="switch-control">
+                    <input type="checkbox" id="switchMonocromatico"
+                      onchange="window.configuracoes.toggleMonocromatico(this.checked)">
+                    <span class="slider-toggle"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Zona de Perigo: Resetar Banco de Dados -->
+              <div class="settings-section"
+                style="margin-top: 40px; padding-top: 24px; border-top: 2px solid var(--border-color);">
+                <h2 class="settings-section-title"
+                  style="color: var(--senai-red); display:flex; align-items:center; gap:8px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                  </svg>
+                  Zona de Perigo
+                </h2>
+                <p class="settings-section-desc">Ações irreversíveis que apagam todos os dados do sistema.</p>
+
+                <div class="settings-card-item" style="background: #fef2f2; border-color: #fecaca;">
+                  <div class="settings-item-left">
+                    <div class="setting-icon-badge" style="background: #fee2e2; color: #991b1b;">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path
+                          d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                        </path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                      </svg>
+                    </div>
+                    <div class="setting-text-group">
+                      <span class="setting-item-title">Resetar Banco de Dados</span>
+                      <span class="setting-item-desc">Apaga TODOS os dados (notas, frequências, ocorrências,
+                        justificativas, compensação, subturmas) e restaura o seed inicial com escala 0-100.
+                        <strong>Irreversível.</strong></span>
+                    </div>
+                  </div>
+                  <div>
+                    <button type="button" class="btn btn-secondary"
+                      style="background: #fee2e2; border-color: #fca5a5; color: #991b1b;"
+                      onclick="window.app.resetarBancoDados()">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M3 6h18"></path>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      </svg>
+                      Resetar Banco de Dados
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </section>
+
+          <!-- ===================================================================
+             ABA 11: ASSISTENTE IA (GROQ + LLAMA 3.1 & ANÁLISE PEDAGÓGICA)
+             =================================================================== -->
+          <section id="tabSection_assistente" class="tab-view-section" style="display: none;">
+            <div class="assistente-view-container">
+
+              <!-- Header do Assistente (Idêntico à referência visual) -->
+              <div class="assistente-header-card">
+                <div class="assistente-header-left">
+                  <div class="assistente-icon-badge" title="Inteligência Artificial SENAI">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                      <circle cx="12" cy="5" r="2"></circle>
+                      <path d="M12 7v4"></path>
+                      <line x1="8" y1="16" x2="8" y2="16"></line>
+                      <line x1="16" y1="16" x2="16" y2="16"></line>
+                    </svg>
+                  </div>
+                  <div class="assistente-header-text">
+                    <h1 class="assistente-header-title">Assistente IA</h1>
+                    <span class="assistente-header-subtitle">Consulte dados da turma em linguagem natural com Groq
+                      (Llama 3.1)</span>
+                  </div>
+                </div>
+
+                <div class="assistente-header-right">
+                  <!-- Seletor de Turma em Foco -->
+                  <div class="assistente-turma-selector" title="Selecione a turma para análise">
+                    <label for="selectTurmaAssistente">Turma:</label>
+                    <select id="selectTurmaAssistente">
+                      <!-- Preenchido via assistente.js -->
+                    </select>
+                  </div>
+
+                  <!-- Botão Chave Groq -->
+                  <button type="button" id="btnConfigGroq" class="btn-gemini-key"
+                    onclick="window.assistenteIAController.abrirModalGroqKey()" title="Configurar Chave Groq API">
+                    <svg width="15" height="15" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M16 2L4 8v16l12 6 12-6V8L16 2zm0 2.5l9 4.5v13l-9 4.5-9-4.5v-13L16 4.5z"
+                        stroke="currentColor" stroke-width="2" fill="none" />
+                      <path d="M16 8.5v15" stroke="currentColor" stroke-width="1.5" />
+                      <path d="M16 8.5l-9 4.5" stroke="currentColor" stroke-width="1.5" />
+                      <path d="M16 8.5l9 4.5" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                    <span>Chave Groq API</span>
+                  </button>
+
+                  <!-- Botão Limpar Conversa -->
+                  <button type="button" id="btnAssistenteLimpar" class="btn-limpar-conversa" title="Limpar conversa">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    <span>Limpar conversa</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Caixa de Chat Principal (Fiel à imagem de referência) -->
+              <div class="assistente-chat-card">
+
+                <!-- Fluxo de Mensagens -->
+                <div id="assistenteChatMessages" class="assistente-chat-messages">
+                  <!-- Preenchido dinamicamente via assistente.js com mensagem inicial -->
+                </div>
+
+                <!-- Pré-opções / Chips de Perguntas Rápidas (11 botões idênticos à imagem) -->
+                <div class="assistente-chips-wrapper">
+                  <div class="assistente-chips-row">
+                    <button type="button" class="assistente-chip-btn" data-action="resumo">Resumo geral</button>
+                    <button type="button" class="assistente-chip-btn" data-action="risco">Alunos em risco</button>
+                    <button type="button" class="assistente-chip-btn" data-action="plano">Plano de ação</button>
+                    <button type="button" class="assistente-chip-btn" data-action="ausentes">Ausentes hoje</button>
+                    <button type="button" class="assistente-chip-btn" data-action="media">Média da turma</button>
+                    <button type="button" class="assistente-chip-btn" data-action="abaixo70">Notas abaixo de 70</button>
+                    <button type="button" class="assistente-chip-btn" data-action="freq80">Frequência &lt; 80%</button>
+                    <button type="button" class="assistente-chip-btn" data-action="observacoes">Observações</button>
+                  </div>
+                  <div class="assistente-chips-row">
+                    <button type="button" class="assistente-chip-btn" data-action="ocorrencias">Ocorrências</button>
+                    <button type="button" class="assistente-chip-btn" data-action="reservas">Reservas</button>
+                    <button type="button" class="assistente-chip-btn" data-action="destaques">Destaques</button>
+                  </div>
+                </div>
+
+                <!-- Barra de Envio de Mensagem -->
+                <div class="assistente-input-wrapper">
+                  <input type="text" id="inputAssistenteMsg" class="assistente-input-box"
+                    placeholder="Digite sua pergunta sobre a turma..." autocomplete="off">
+                  <button type="button" id="btnAssistenteEnviar" class="btn-assistente-send">
+                    <span>Enviar</span>
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+
+  <!-- =========================================================================
+       WIDGETS FLUTUANTES (IDÊNTICOS ÀS IMAGENS 2, 4 E 5)
+       ========================================================================= -->
+  <div class="floating-widgets-stack">
+    <!-- Botão VLibras Flutuante Azul com Mãozinha -->
+    <button type="button" id="floatingVlibrasWidget" class="floating-btn-vlibras"
+      onclick="window.configuracoes.toggleVLibras(!window.configuracoes.vlibrasAtivo)"
+      title="VLibras - Ativar/Desativar Tradução para Libras">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path>
+        <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path>
+        <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path>
+        <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15">
+        </path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Botão Flutuante Atendimento Educação Online (Canto Inferior Direito - Imagens 2 e 4) -->
+  <div id="floatingAtendimentoWidget" class="floating-atendimento-pill" title="Atendimento Educação Online">
+    <div class="atendimento-icon-bubble">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+        <path
+          d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z">
+        </path>
+      </svg>
+    </div>
+    <span>Atendimento Educação Online</span>
+  </div>
+
+
+  <!-- =========================================================================
+       MODAIS INTERATIVOS
+       ========================================================================= -->
+
+  <!-- Modal: Nova Ocorrência -->
+  <div id="modalNovaOcorrencia" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Registrar Nova Ocorrência</h3>
+        <button type="button" class="btn-close-modal"
+          onclick="window.app.fecharModal('modalNovaOcorrencia')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="login-form-group">
+          <label class="filter-label">Aluno</label>
+          <select id="selectNovaOcorrenciaAluno" class="filter-select" style="width:100%;"></select>
+        </div>
+        <div class="login-form-group">
+          <label class="filter-label">Tipo da Ocorrência</label>
+          <select id="selectNovaOcorrenciaTipo" class="filter-select" style="width:100%;">
+            <option value="PEDAGOGICA">Pedagógica</option>
+            <option value="DISCIPLINAR">Disciplinar</option>
+            <option value="MEDICA">Médica</option>
+            <option value="ELOGIO">Elogio / Destaque</option>
+            <option value="OUTRA">Outra</option>
+          </select>
+        </div>
+        <div class="login-form-group">
+          <label class="filter-label">Título da Ocorrência</label>
+          <input type="text" id="inputNovaOcorrenciaTitulo" class="filter-select" style="width:100%;"
+            placeholder="Ex: Acúmulo de atrasos ou Destaque técnico...">
+        </div>
+        <div class="login-form-group">
+          <label class="filter-label">Descrição Detalhada dos Fatos</label>
+          <textarea id="textNovaOcorrenciaDescricao" class="filter-select"
+            style="width:100%; height:90px; padding:10px;"
+            placeholder="Relate as informações pertinentes..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+          onclick="window.app.fecharModal('modalNovaOcorrencia')">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+          onclick="window.ocorrenciasController.salvarNovaOcorrencia()">Salvar Ocorrência</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Detalhes do Aluno no Carômetro -->
+  <div id="modalAlunoDetalhes" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Ficha Individual do Aluno</h3>
+        <button type="button" class="btn-close-modal"
+          onclick="window.app.fecharModal('modalAlunoDetalhes')">&times;</button>
+      </div>
+      <div id="modalAlunoDetalhesBody" class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+          onclick="window.app.fecharModal('modalAlunoDetalhes')">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Registrar Cumprimento de Compensação -->
+  <div id="modalRegistrarCompensacao" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Registrar Cumprimento de Compensação</h3>
+        <button type="button" class="btn-close-modal"
+          onclick="window.app.fecharModal('modalRegistrarCompensacao')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="inputCompensacaoId">
+        <div class="academic-alert alert-info">
+          Ao homologar o cumprimento, o status da obrigação é alterado para "CUMPRIDO" e computado na Síntese do
+          Professor.
+        </div>
+        <div class="login-form-group">
+          <label class="filter-label">Descrição da Atividade de Reposição Cumprida</label>
+          <textarea id="textCompensacaoRelato" class="filter-select" style="width:100%; height:80px; padding:10px;"
+            placeholder="Descreva a atividade, exercícios ou projeto entregue pelo aluno..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+          onclick="window.app.fecharModal('modalRegistrarCompensacao')">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+          onclick="window.compensacoesController.salvarCumprimento()">Homologar Compensação</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alteração 6: Modal para inserção manual de compensação pelo professor -->
+  <div id="modalNovaCompensacao" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Definir Compensação Manual</h3>
+        <button type="button" class="btn-close-modal"
+          onclick="window.app.fecharModal('modalNovaCompensacao')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="login-form-group">
+          <label class="filter-label">Aluno</label>
+          <select id="selectNovaCompensacaoAluno" class="filter-select" style="width:100%;"></select>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;" class="login-form-group">
+          <div>
+            <label class="filter-label">Carga a Compensar (Horas)</label>
+            <input type="number" id="inputNovaCompensacaoHoras" class="filter-select" style="width:100%;" min="1"
+              max="40" value="2">
+          </div>
+          <div>
+            <label class="filter-label">Prazo Limite</label>
+            <input type="date" id="inputNovaCompensacaoDataLimite" class="filter-select" style="width:100%;">
+          </div>
+        </div>
+        <div class="login-form-group">
+          <label class="filter-label">Motivo da Obrigação</label>
+          <input type="text" id="inputNovaCompensacaoMotivo" class="filter-select" style="width:100%;"
+            placeholder="Ex: Acúmulo de atrasos ou reposição de atividade prática...">
+        </div>
+        <div class="login-form-group">
+          <label class="filter-label">Descrição da Atividade Complementar</label>
+          <textarea id="textNovaCompensacaoDescricao" class="filter-select"
+            style="width:100%; height:80px; padding:10px;"
+            placeholder="Descreva a atividade, exercícios ou projeto a ser entregue pelo aluno..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+          onclick="window.app.fecharModal('modalNovaCompensacao')">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+          onclick="window.compensacoesController.salvarNovaCompensacao()">Salvar Compensação</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Nova Avaliação -->
+  <div id="modalNovaAvaliacao" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Cadastrar Nova Avaliação</h3>
+        <button type="button" class="btn-close-modal"
+          onclick="window.app.fecharModal('modalNovaAvaliacao')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="login-form-group">
+          <label class="filter-label">Título da Avaliação</label>
+          <input type="text" id="inputNovaAvaliacaoTitulo" class="filter-select" style="width:100%;"
+            placeholder="Ex: Prova Teórica 2 ou Projeto Integrador...">
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;" class="login-form-group">
+          <div>
+            <label class="filter-label">Tipo</label>
+            <select id="selectNovaAvaliacaoTipo" class="filter-select" style="width:100%;">
+              <option value="PROVA">Prova Escrita</option>
+              <option value="PROJETO">Projeto Prático</option>
+              <option value="PRATICA">Laboratório</option>
+              <option value="SEMINARIO">Seminário</option>
+            </select>
+          </div>
+          <div>
+            <label class="filter-label">Peso na Média</label>
+            <input type="number" step="0.5" id="inputNovaAvaliacaoPeso" class="filter-select" style="width:100%;"
+              value="3.0">
+          </div>
+        </div>
+        <div class="login-form-group">
+          <label class="filter-label">Data da Aplicação</label>
+          <input type="date" id="inputNovaAvaliacaoData" class="filter-select" style="width:100%;" value="2026-10-22">
+        </div>
+        <div class="login-form-group">
+          <label class="filter-label">Nota Máxima (Escala)</label>
+          <input type="number" id="inputNovaAvaliacaoValorMaximo" class="filter-select" style="width:100%;" value="100"
+            min="10" max="1000" step="10">
+          <small style="color: var(--text-muted); font-size: 11px;">Padrão: 100 (escala 0-100)</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+          onclick="window.app.fecharModal('modalNovaAvaliacao')">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="window.notasController.salvarNovaAvaliacao()">Cadastrar
+          Avaliação</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Alterar Senha (Imagem 4) -->
+  <div id="modalAlterarSenha" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Alterar Senha de Acesso</h3>
+        <button type="button" class="btn-close-modal"
+          onclick="window.app.fecharModal('modalAlterarSenha')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="login-form-group">
+          <label class="filter-label">Senha Atual</label>
+          <input type="password" id="inputSenhaAtual" class="filter-select" style="width:100%;"
+            placeholder="Digite sua senha atual">
+        </div>
+        <div class="login-form-group">
+          <label class="filter-label">Nova Senha</label>
+          <input type="password" id="inputNovaSenha" class="filter-select" style="width:100%;"
+            placeholder="Mínimo de 6 caracteres">
+        </div>
+        <div class="login-form-group">
+          <label class="filter-label">Confirmar Nova Senha</label>
+          <input type="password" id="inputConfirmarSenha" class="filter-select" style="width:100%;"
+            placeholder="Repita a nova senha">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+          onclick="window.app.fecharModal('modalAlterarSenha')">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="window.app.salvarNovaSenha()">Atualizar Senha</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Alerta Global de Diálogo -->
+  <div id="modalAlertaGlobal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modalAlertaTitulo" class="modal-title">Aviso do Sistema</h3>
+        <button type="button" class="btn-close-modal"
+          onclick="window.app.fecharModal('modalAlertaGlobal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="modalAlertaMensagem"
+          style="font-size:14px; line-height:1.6; white-space:pre-line; color:var(--text-main);"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+          onclick="window.app.fecharModal('modalAlertaGlobal')">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Configuração da Chave Groq API -->
+  <div id="modalConfigGroq" class="modal-overlay">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="display:flex; align-items:center; gap:8px;">
+          <svg width="20" height="20" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 2L4 8v16l12 6 12-6V8L16 2zm0 2.5l9 4.5v13l-9 4.5-9-4.5v-13L16 4.5z" stroke="currentColor"
+              stroke-width="2" fill="none" />
+            <path d="M16 8.5v15" stroke="currentColor" stroke-width="1.5" />
+            <path d="M16 8.5l-9 4.5" stroke="currentColor" stroke-width="1.5" />
+            <path d="M16 8.5l9 4.5" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+          Groq API - Inteligência Artificial (Llama 3.1)
+        </h3>
+        <button type="button" class="btn-close-modal"
+          onclick="window.app.fecharModal('modalConfigGroq')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="gemini-modal-desc">
+          Conecte sua chave da API da <strong>Groq</strong> para habilitar raciocínio generativo com <strong>Llama
+            3.1</strong> em linguagem natural sobre o diário, frequências e notas da turma.
+        </p>
+
+        <div class="login-form-group" style="margin-bottom: 14px;">
+          <label class="filter-label">Chave da API Groq (API Key)</label>
+          <input type="password" id="inputGroqApiKey" class="filter-select" style="width:100%; font-family: monospace;"
+            placeholder="gsk_...">
+          <small style="display:block; margin-top:6px; color:var(--text-muted); font-size:12px;">
+            Obtenha sua chave gratuita no <a href="https://console.groq.com/keys" target="_blank"
+              rel="noopener noreferrer" class="gemini-guide-link">Groq Console ↗</a>.
+          </small>
+        </div>
+
+        <div
+          style="background:var(--bg-card-subtle); padding:12px; border-radius:8px; border:1px solid var(--border-color); font-size:12px; line-height:1.5; color:var(--text-muted);">
+          🛡️ <strong>Privacidade:</strong> Sua chave é armazenada de forma segura exclusivamente no armazenamento local
+          do seu navegador (LocalStorage) e nunca é enviada a servidores intermediários.
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between;">
+        <button type="button" class="btn btn-secondary" onclick="window.assistenteIAController.removerGroqKey()"
+          style="color:#dc2626;">Remover Chave</button>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-secondary"
+            onclick="window.app.fecharModal('modalConfigGroq')">Cancelar</button>
+          <button type="button" class="btn btn-primary" onclick="window.assistenteIAController.salvarGroqKey()">Salvar
+            Chave</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Criar Nova Turma (Coordenador) -->
+  <div id="modalCoordenadorNovaTurma" class="modal-overlay">
+    <div class="modal-box" style="max-width:560px;">
+      <div class="modal-header">
+        <h3 class="modal-title">&#43; Criar Nova Turma</h3>
+        <button type="button" class="btn-close-modal"
+          onclick="window.app.fecharModal('modalCoordenadorNovaTurma')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="coord-modal-section-title">Dados da Turma</div>
+        <div class="login-form-group" style="margin-bottom:14px;">
+          <label class="filter-label">Nome / Descrição da Turma *</label>
+          <input type="text" id="novaTurmaNome" class="filter-select" style="width:100%;"
+            placeholder="Ex: Técnico em Desenvolvimento de Sistemas - 1º Termo A">
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+          <div class="login-form-group">
+            <label class="filter-label">Curso *</label>
+            <select id="novaTurmaCurso" class="filter-select" style="width:100%;"></select>
+          </div>
+          <div class="login-form-group">
+            <label class="filter-label">Turno *</label>
+            <select id="novaTurmaTurno" class="filter-select" style="width:100%;">
+              <option value="Manhã">Manhã</option>
+              <option value="Tarde">Tarde</option>
+              <option value="Noite">Noite</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="login-form-group">
+            <label class="filter-label">Semestre/Ano *</label>
+            <select id="novaTurmaSemestre" class="filter-select" style="width:100%;">
+              <option value="2026-1">2026 / 1º Semestre</option>
+              <option value="2026-2">2026 / 2º Semestre</option>
+              <option value="2027-1">2027 / 1º Semestre</option>
+              <option value="2027-2">2027 / 2º Semestre</option>
+            </select>
+          </div>
+          <div class="login-form-group">
+            <label class="filter-label">Limite de Vagas *</label>
+            <input type="number" id="novaTurmaLimiteVagas" class="filter-select" style="width:100%;"
+              placeholder="Ex: 35" min="1" max="60">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content:flex-end; display:flex; gap:8px;">
+        <button type="button" class="btn btn-secondary"
+          onclick="window.app.fecharModal('modalCoordenadorNovaTurma')">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="window.coordenadorController.salvarNovaTurma()">
+          Criar Turma
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Atribuir Docente -->
+  <div id="modalAtribuirDocente" class="modal-overlay">
+    <div class="modal-box" style="max-width:480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Atribuir Docente</h3>
+        <button type="button" class="btn-close-modal"
+          onclick="window.app.fecharModal('modalAtribuirDocente')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+          Turma: <strong id="atribuirDocenteTurmaLabel">—</strong>
+        </p>
+        <div class="login-form-group">
+          <label class="filter-label">Selecione o Docente</label>
+          <select id="selectAtribuirDocente" class="filter-select" style="width:100%;"></select>
+          <small style="display:block; margin-top:6px; color:var(--text-muted); font-size:11.5px;">
+            &#9888;&#65039; Docentes marcados com "Conflito de Turno" já possuem atribuição no mesmo período.
+          </small>
+          <div id="atribuirConflitoAlerta"
+            style="display:none; margin-top:12px; padding:10px 12px; background:#fff3cd; border:1px solid #ffeeba; border-radius:6px; font-size:12px; color:#856404; line-height:1.4;">
+            ⚠️ <strong>Atenção: Conflito de Turno Detectado!</strong><br>
+            <span id="atribuirConflitoTexto">Este docente já possui outra turma em andamento neste mesmo turno.</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content:flex-end; display:flex; gap:8px;">
+        <button type="button" class="btn btn-secondary"
+          onclick="window.app.fecharModal('modalAtribuirDocente')">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+          onclick="window.coordenadorController.confirmarAtribuicaoDocente()">Confirmar Atribuição</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Solicitar Fechamento do Diário (Docente) -->
+  <div id="modalSolicitarFechamento" class="modal-overlay">
+    <div class="modal-box" style="max-width:480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Solicitar Fechamento do Diário</h3>
+        <button type="button" class="btn-close-modal"
+          onclick="window.app.fecharModal('modalSolicitarFechamento')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+          O diário permanecerá editável até a aprovação oficial pela coordenação.
+        </p>
+        <div class="login-form-group" style="margin-bottom:14px;">
+          <label class="filter-label">Turma</label>
+          <select id="selectFechamentoTurma" class="filter-select" style="width:100%;"></select>
+        </div>
+        <div class="login-form-group">
+          <label class="filter-label">Observação (opcional)</label>
+          <textarea id="inputFechamentoObs" class="filter-select" style="width:100%; height:80px; resize:vertical;"
+            placeholder="Informe pendências ou observações para a coordenação..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content:flex-end; display:flex; gap:8px;">
+        <button type="button" class="btn btn-secondary"
+          onclick="window.app.fecharModal('modalSolicitarFechamento')">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+          onclick="window.coordenadorController.confirmarSolicitacaoFechamento()">Enviar Solicitação</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container de Toasts (Canto Superior Direito) -->
+  <div id="toastContainer" class="toast-container"></div>
+
+
+  <!-- Scripts da Aplicação -->
+  <script src="js/db.js?v=10"></script>
+  <script src="js/auth.js?v=10"></script>
+  <script src="js/configuracoes.js?v=10"></script>
+  <script src="js/diario.js?v=10"></script>
+  <script src="js/subturmas.js?v=10"></script>
+  <script src="js/ocorrencias.js?v=10"></script>
+  <script src="js/compensacoes.js?v=10"></script>
+  <script src="js/notas.js?v=10"></script>
+  <script src="js/sintese.js?v=10"></script>
+  <script src="js/relatorios.js?v=10"></script>
+  <script src="js/assistente.js?v=10"></script>
+  <script src="js/coordenador.js?v=10"></script>
+  <script src="js/app.js?v=10"></script>
+</body>
+
+</html>

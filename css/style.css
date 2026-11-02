@@ -1,0 +1,1338 @@
+/* =============================================================================
+   RENOVA SENAI - ESTILOS PRINCIPAIS DO PORTAL
+   Inspirado no layout do Portal SENAI Educação Online / ead.sp.senai.br
+   ============================================================================= */
+
+:root {
+  /* Paleta SENAI */
+  --senai-red: #c3161c;
+  --senai-red-rgb: 195, 22, 28;
+  --senai-red-dark: #960000;
+  --senai-red-deep: #700000;
+  --senai-red-hover: #a81016;
+  --senai-red-light: #fff1f1;
+  --senai-orange-start: #ea580c;
+  --senai-orange-end: #c2410c;
+
+  /* Tema Claro (Padrão) */
+  --bg-app: #f4f5f8;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-subtle: #f8fafc;
+  --bg-input: #ffffff;
+  --border-color: #e2e8f0;
+  --border-focus: #c3161c;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* Tipografia */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-base-size: 16px;
+
+  /* Dimensões */
+  --sidebar-width: 92px;
+  --header-height: 70px;
+}
+
+/* Tema Escuro */
+[data-theme="dark"] {
+  --bg-app: #0f1115;
+  --bg-sidebar: #17191e;
+  --bg-card: #1c1f26;
+  --bg-card-subtle: #242932;
+  --bg-input: #20242c;
+  --border-color: #2e3541;
+  --border-focus: #ef4444;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Acessibilidade - Tamanho de Fonte */
+[data-font-size="pequeno"] {
+  --font-base-size: 14px; /* 87.5% */
+}
+[data-font-size="normal"] {
+  --font-base-size: 16px; /* 100% */
+}
+[data-font-size="grande"] {
+  --font-base-size: 18px; /* 112.5% */
+}
+[data-font-size="extra-grande"] {
+  --font-base-size: 20px; /* 125% */
+}
+
+/* Acessibilidade - Modo Monocromático */
+.main-content-wrapper.mode-monochrome {
+  filter: grayscale(100%) !important;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-base-size);
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Wrapper para conteúdo principal (exclui elementos fixed como VLibras, modais, etc.) */
+.main-content-wrapper {
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* =============================================================================
+   LAYOUT PRINCIPAL (SIDEBAR + MAIN WRAPPER)
+   ============================================================================= */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Barra Lateral Esquerda (Sidebar idêntica à do SENAI Online) */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 8px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* Logo SENAI "S" no topo da Sidebar */
+.sidebar-logo {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  width: 100%;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+
+.logo-s-badge {
+  width: 52px;
+  height: 52px;
+  background-color: var(--senai-red);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -1.5px;
+  box-shadow: 0 4px 10px rgba(var(--senai-red-rgb), 0.35);
+  user-select: none;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.logo-s-badge:hover {
+  transform: scale(1.05);
+}
+
+/* Lista de Menus da Sidebar */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  align-items: center;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
+  padding-bottom: 8px;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Divisores sutis entre grupos */
+.sidebar-divider {
+  width: 36px;
+  height: 1px;
+  background: var(--border-color);
+  margin: 4px 0;
+  opacity: 0.8;
+  border-radius: 1px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  min-height: 64px;
+  padding: 8px 4px;
+  border-radius: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  gap: 5px;
+  transition: all 0.2s ease;
+  position: relative;
+  text-align: center;
+}
+
+.nav-item svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.8;
+  transition: transform 0.2s ease, stroke 0.2s ease;
+}
+
+.nav-item:hover {
+  color: var(--senai-red);
+  background-color: rgba(var(--senai-red-rgb), 0.06);
+}
+
+.nav-item:hover svg {
+  transform: translateY(-2px);
+}
+
+/* Item Ativo (traço vermelho embaixo como no portal oficial) */
+.nav-item.active,
+.nav-group.active > .nav-group-trigger {
+  color: var(--senai-red);
+  font-weight: 600;
+  background-color: rgba(var(--senai-red-rgb), 0.08);
+}
+
+.nav-item.active::after,
+.nav-group.active > .nav-group-trigger::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 28px;
+  height: 3px;
+  background-color: var(--senai-red);
+  border-radius: 4px;
+}
+
+/* Ícone com indicador de subitens e badge */
+.nav-item-icon-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Linha de rótulo do grupo com seta indicadora retrátil */
+.nav-group-label-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+}
+
+.nav-chevron {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.2;
+  color: var(--text-muted);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.nav-group:hover .nav-chevron,
+.nav-group.active .nav-chevron {
+  color: var(--senai-red);
+}
+
+.nav-group.open .nav-chevron {
+  transform: rotate(180deg);
+  color: var(--senai-red);
+}
+
+/* Badge especial Assistente IA */
+.ai-badge-dot {
+  position: absolute;
+  top: -4px;
+  right: -10px;
+  background: linear-gradient(135deg, #ea580c, #c3161c);
+  color: #ffffff;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 6px;
+  letter-spacing: 0.4px;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.4);
+}
+
+/* -----------------------------------------------------------------------------
+   CONTAINER DO GRUPO E SUBMENU RETRÁTIL INLINE (ACORDEOM)
+   ----------------------------------------------------------------------------- */
+.nav-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.nav-group-trigger {
+  width: 76px;
+  min-height: 64px;
+}
+
+/* Quando o grupo está ativo mas FECHADO, mostra o traço vermelho no trigger */
+.nav-group.active:not(.open) > .nav-group-trigger::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 28px;
+  height: 3px;
+  background-color: var(--senai-red);
+  border-radius: 4px;
+}
+
+/* Quando o grupo está aberto, destacar o trigger */
+.nav-group.open > .nav-group-trigger {
+  color: var(--senai-red);
+  background-color: rgba(var(--senai-red-rgb), 0.05);
+  border-radius: 12px 12px 6px 6px;
+}
+
+/* Submenu Retrátil que abre embaixo ao clicar */
+.nav-submenu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  padding: 0 4px;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.025);
+  border: 1px solid transparent;
+  border-radius: 0 0 12px 12px;
+  transform: translateY(-4px);
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease,
+              transform 0.25s ease,
+              visibility 0.25s,
+              padding 0.25s ease,
+              margin 0.25s ease,
+              border-color 0.25s ease;
+}
+
+[data-theme="dark"] .nav-submenu {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+/* Abre embaixo quando tiver classe .open */
+.nav-group.open .nav-submenu {
+  max-height: 420px;
+  opacity: 1;
+  visibility: visible;
+  overflow: visible;
+  transform: translateY(0);
+  padding: 5px 3px 6px 3px;
+  margin-top: 2px;
+  border-color: var(--border-color);
+  border-top-color: transparent;
+}
+
+/* Itens filhos do Submenu */
+.nav-sub-item {
+  width: 70px !important;
+  min-height: 50px !important;
+  padding: 6px 2px !important;
+  border-radius: 8px !important;
+  font-size: 0.625rem !important;
+  gap: 3px !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  position: relative !important;
+  text-align: center !important;
+  color: var(--text-muted) !important;
+  transition: all 0.18s ease !important;
+  cursor: pointer;
+}
+
+.nav-sub-item svg {
+  width: 19px !important;
+  height: 19px !important;
+  stroke-width: 1.8 !important;
+  transition: transform 0.18s ease, stroke 0.18s ease;
+}
+
+.nav-sub-item span {
+  font-size: 0.625rem !important;
+  letter-spacing: -0.2px;
+  line-height: 1.15;
+  white-space: nowrap;
+  max-width: 66px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-sub-item:hover {
+  color: var(--senai-red) !important;
+  background-color: rgba(var(--senai-red-rgb), 0.08) !important;
+  border-color: rgba(var(--senai-red-rgb), 0.15) !important;
+}
+
+.nav-sub-item:hover svg {
+  transform: translateY(-1px);
+}
+
+/* Sub-item Ativo */
+.nav-sub-item.active {
+  color: var(--senai-red) !important;
+  font-weight: 700 !important;
+  background-color: rgba(var(--senai-red-rgb), 0.12) !important;
+  border-color: rgba(var(--senai-red-rgb), 0.25) !important;
+}
+
+.nav-sub-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  width: 18px;
+  height: 2.5px;
+  background-color: var(--senai-red);
+  border-radius: 2px;
+}
+
+/* Botão Sair no Rodapé da Sidebar */
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-logout {
+  color: #ef4444 !important;
+}
+.btn-logout:hover {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  color: #dc2626 !important;
+}
+
+/* =============================================================================
+   CONTEÚDO PRINCIPAL (MAIN CONTAINER COM CARTÃO BRANCO ARREDONDADO)
+   ============================================================================= */
+.main-wrapper {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  padding: 24px 32px 60px 32px;
+  max-width: 1560px;
+  width: calc(100% - var(--sidebar-width));
+}
+
+/* Container do Cartão Branco Arredondado (idêntico ao ead.sp.senai.br) */
+.content-card-canvas {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24px 32px 48px 32px;
+  min-height: calc(100vh - 48px);
+  position: relative;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* Barra Superior interna do Canvas */
+.canvas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.canvas-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Botão Circular de Informações (i) */
+.btn-info-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-info-circle:hover {
+  background-color: var(--bg-card-subtle);
+  color: var(--text-main);
+  border-color: var(--text-subtle);
+}
+
+.portal-tag-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  background-color: rgba(var(--senai-red-rgb), 0.08);
+  color: var(--senai-red);
+  border-radius: var(--radius-full);
+}
+
+/* Perfil do Usuário no Topo Direito (NM / Nathan Santana Matos) */
+.canvas-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-action-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.header-action-btn:hover {
+  background-color: var(--bg-card-subtle);
+  color: var(--senai-red);
+  border-color: var(--senai-red);
+}
+
+.notification-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 9px;
+  height: 9px;
+  background-color: var(--senai-red);
+  border-radius: 50%;
+  border: 2px solid var(--bg-card);
+}
+
+.user-profile-widget {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.user-profile-widget:hover {
+  background-color: var(--bg-card-subtle);
+}
+
+.user-avatar-initials {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+  flex-shrink: 0;
+}
+
+.user-profile-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.user-name {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.2px;
+}
+
+.user-email {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+/* =============================================================================
+   BANNER VERMELHO OFICIAL (IDÊNTICO À IMAGEM 1)
+   ============================================================================= */
+.senai-welcome-banner {
+  background: linear-gradient(135deg, var(--senai-red) 0%, var(--senai-red-dark) 100%);
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  padding: 32px 36px;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(var(--senai-red-rgb, 195, 22, 28), 0.3);
+}
+
+/* Brilhos e grafismos sutis de fundo do banner */
+.senai-welcome-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.banner-title {
+  font-size: 1.625rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.banner-subtitle {
+  font-size: 0.90625rem;
+  font-weight: 400;
+  opacity: 0.92;
+  max-width: 780px;
+  line-height: 1.5;
+}
+
+/* =============================================================================
+   TÍTULO DE SEÇÃO, ABAS E FILTROS
+   ============================================================================= */
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.section-main-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-count-badge {
+  color: var(--senai-red);
+  font-weight: 700;
+}
+
+/* Abas de Navegação (Em andamento | Expirados | Concluídos) */
+.filter-tabs-group {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid var(--border-color);
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  padding: 10px 4px 14px 4px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: var(--text-main);
+}
+
+.tab-btn.active {
+  color: var(--senai-red);
+  font-weight: 700;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--senai-red);
+  border-radius: 4px 4px 0 0;
+}
+
+/* Barra de Busca */
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper input {
+  height: 42px;
+  padding: 0 16px 0 40px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  min-width: 260px;
+  transition: all 0.2s ease;
+}
+
+.search-input-wrapper input:focus {
+  outline: none;
+  border-color: var(--senai-red);
+  box-shadow: 0 0 0 3px rgba(var(--senai-red-rgb), 0.12);
+}
+
+.search-input-wrapper svg {
+  position: absolute;
+  left: 12px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-subtle);
+  pointer-events: none;
+}
+
+/* =============================================================================
+   CARDS DE TURMAS E CURSOS (ESTILO PORTAL SENAI)
+   ============================================================================= */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.course-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(var(--senai-red-rgb), 0.3);
+}
+
+.card-cover {
+  height: 140px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px 14px;
+}
+
+.card-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+.card-badge {
+  position: relative;
+  z-index: 2;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.badge-senai {
+  background-color: #ea580c;
+  color: #ffffff;
+}
+
+.badge-tag-status {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+}
+
+.badge-concluida {
+  background-color: #16a34a;
+  color: #ffffff;
+}
+
+.card-concluida {
+  opacity: 0.85;
+  border-color: #16a34a;
+}
+
+.card-concluida .card-cover {
+  filter: grayscale(20%);
+}
+
+.card-concluida .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.card-body {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card-code {
+  font-size: 0.71875rem;
+  font-weight: 600;
+  color: var(--senai-red);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+.card-meta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.78125rem;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  flex: 1;
+}
+
+.card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-meta-item svg {
+  width: 15px;
+  height: 15px;
+  color: var(--text-subtle);
+  flex-shrink: 0;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* =============================================================================
+   BOTÕES E ELEMENTOS INTERATIVOS
+   ============================================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-sm {
+  font-size: 0.75rem;
+  padding: 6px 12px;
+}
+
+.btn-primary {
+  background-color: var(--senai-red);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--senai-red-hover);
+  box-shadow: 0 4px 10px rgba(var(--senai-red-rgb), 0.25);
+}
+
+.btn-secondary {
+  background-color: var(--bg-card-subtle);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background-color: var(--border-color);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.btn-outline:hover {
+  border-color: var(--senai-red);
+  color: var(--senai-red);
+}
+
+/* =============================================================================
+   WIDGETS FLUTUANTES (VLIBRAS, ACESSIBILIDADE E ATENDIMENTO ONLINE)
+   (Visíveis exatamente como nas imagens 2, 4 e 5)
+   ============================================================================= */
+.floating-widgets-stack {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.floating-btn-vlibras {
+  width: 44px;
+  height: 48px;
+  background-color: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px 0 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: -2px 4px 12px rgba(2, 132, 199, 0.35);
+  transition: width 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.floating-btn-vlibras:hover {
+  width: 52px;
+  background-color: #0369a1;
+}
+
+/* Estado ativo do VLibras - pulsa e fica mais evidente */
+.floating-btn-vlibras.active {
+  background-color: #06b6d4;
+  box-shadow: -2px 4px 20px rgba(6, 182, 212, 0.6);
+  animation: vlibras-pulse 2s infinite;
+}
+
+@keyframes vlibras-pulse {
+  0%, 100% { box-shadow: -2px 4px 12px rgba(6, 182, 212, 0.4); }
+  50% { box-shadow: -2px 4px 24px rgba(6, 182, 212, 0.8); }
+}
+
+/* Botão de Atendimento Educação Online no Canto Inferior Direito */
+.floating-atendimento-pill {
+  position: fixed;
+  bottom: 24px;
+  right: 28px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 18px 6px 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  z-index: 999;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #1e293b;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-theme="dark"] .floating-atendimento-pill {
+  background-color: #1c1f26;
+  border-color: #2e3541;
+  color: #f1f5f9;
+}
+
+.floating-atendimento-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+.atendimento-icon-bubble {
+  width: 38px;
+  height: 38px;
+  background-color: var(--senai-red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+/* Responsividade Básica */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 68px;
+    padding: 12px 4px;
+  }
+  .nav-item,
+  .nav-group-trigger {
+    width: 60px;
+    font-size: 0.625rem;
+  }
+  .nav-submenu {
+    width: 100%;
+  }
+  .nav-sub-item {
+    width: 56px !important;
+    min-height: 44px !important;
+    font-size: 0.58rem !important;
+  }
+  .nav-sub-item svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  .nav-sub-item span {
+    max-width: 52px;
+  }
+  .main-wrapper {
+    margin-left: 68px;
+    width: calc(100% - 68px);
+    padding: 16px;
+  }
+  .content-card-canvas {
+    padding: 16px 20px;
+  }
+}
+
+/* ============================================================
+   TURMA DETALHE - HEADER
+   ============================================================ */
+.turma-detalhe-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+.turma-detalhe-info {
+  flex: 1;
+}
+
+.turma-detalhe-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--senai-red);
+  background: rgba(var(--senai-red-rgb), 0.08);
+  border: 1px solid rgba(var(--senai-red-rgb), 0.2);
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-bottom: 6px;
+}
+
+.turma-detalhe-nome {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 4px 0;
+  line-height: 1.3;
+}
+
+.turma-detalhe-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   GRID DE MÓDULOS (CARDS VISUAIS)
+   ============================================================ */
+.turma-modulos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 16px;
+}
+
+.modulo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 28px 16px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.22s ease;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.modulo-card:hover {
+  border-color: rgba(var(--senai-red-rgb), 0.35);
+  box-shadow: 0 8px 24px -4px rgba(var(--senai-red-rgb), 0.18);
+  transform: translateY(-3px);
+}
+
+.modulo-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(var(--senai-red-rgb), 0.08);
+  border: 1px solid rgba(var(--senai-red-rgb), 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--senai-red);
+  transition: all 0.22s ease;
+}
+
+.modulo-card-icon svg {
+  width: 26px;
+  height: 26px;
+  stroke-width: 1.8;
+}
+
+.modulo-card:hover .modulo-card-icon {
+  background: var(--senai-red);
+  color: #fff;
+  transform: scale(1.08);
+}
+
+.modulo-card-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.modulo-card-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+  margin-top: -4px;
+}
+
+/* ============================================================
+   SIDEBAR - MODO TURMA
+   ============================================================ */
+.sidebar-turma-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8px 4px;
+  width: 100%;
+}
+
+#sidebarTurmaCodigo {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--senai-red);
+  background: rgba(var(--senai-red-rgb), 0.08);
+  border: 1px solid rgba(var(--senai-red-rgb), 0.2);
+  border-radius: 8px;
+  padding: 4px 8px;
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-item-back {
+  color: var(--text-muted) !important;
+}
+
+.nav-item-back:hover {
+  color: var(--senai-red) !important;
+}
+
+/* ============================================================
+   BOTÃO BREADCRUMB VOLTAR À TURMA
+   ============================================================ */
+.turma-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+  margin-bottom: 16px;
+  font-family: inherit;
+}
+
+.turma-back-btn:hover {
+  color: var(--senai-red);
+  border-color: rgba(var(--senai-red-rgb), 0.3);
+  background: rgba(var(--senai-red-rgb), 0.04);
+}
+
+/* ============================================================
+   LOGO SENAI OFICIAL - SIDEBAR
+   ============================================================ */
+.sidebar-senai-logo {
+  display: block;
+  width: 76px;
+  height: auto;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+/* Remove estilos do antigo logo-s-badge caso ainda exista em algum lugar */
+.logo-s-badge {
+  display: none;
+}
+
+/* ============================================================
+   LOGO SENAI NOS CARDS DE TURMA
+   ============================================================ */
+.badge-senai {
+  background: #c3161c !important;
+  padding: 3px 7px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 6px !important;
+  line-height: 1 !important;
+}
+
+.card-senai-logo {
+  display: block;
+  height: 14px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1); /* Deixa a logo branca */
+}
+
+/* Logo SENAI na tela de login - ajustar tamanho se necessário */
+.senai-badge-img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+
+
+/* ============================================================
+   OCULTAR WIDGET VLIBRAS NATIVO (quadrado azul do gov.br)
+   ============================================================ */
+[vw], [vw-access-button], .vw-plugin-top-wrapper,
+div[class*="vlibras"], div[id*="vlibras"],
+#div-libras, .div-libras {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+}

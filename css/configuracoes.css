@@ -1,0 +1,560 @@
+/* =============================================================================
+   RENOVA SENAI - CONFIGURAÇÕES & MEU PERFIL (IDÊNTICO ÀS IMAGENS 4 E 5)
+   Banner Laranja com Grid, Cards de Temas (Sistema, Claro, Escuro) e Acessibilidade
+   ============================================================================= */
+
+/* Banner Laranja de "Meu perfil" com padrão de grade (Grid Pattern) */
+.settings-profile-banner {
+  background: #000000; /* Fundo preto sólido */
+  border-radius: var(--radius-md);
+  padding: 36px 40px;
+  margin-bottom: 32px;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+
+  /* Padrão de Grade (Wireframe Grid) idêntico à imagem 4 */
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 36px 36px;
+  background-position: -1px -1px;
+
+  /* Layout Flex para organizar conteúdo */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings-profile-banner .banner-title {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+
+.settings-profile-banner .banner-subtitle {
+  font-size: 15px;
+  opacity: 0.95;
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* =============================================================================
+   PERFIL DO USUÁRIO - LAYOUT COM AVATAR E INFO
+   ============================================================================= */
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 700px;
+  flex-wrap: wrap;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.profile-avatar .avatar-initials {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.profile-details {
+  flex: 1;
+  min-width: 200px;
+}
+
+.profile-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.profile-email {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.profile-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.profile-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #ffffff;
+}
+
+.profile-matricula {
+  font-size: 13px;
+  opacity: 0.85;
+  color: #ffffff;
+  font-weight: 500;
+  font-family: 'SF Mono', 'Monospace', monospace;
+}
+
+/* Botão Alterar Senha */
+.profile-actions {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+}
+
+/* =============================================================================
+   RESPONSIVIDADE
+   ============================================================================= */
+@media (max-width: 600px) {
+  .settings-profile-banner {
+    padding: 24px;
+  }
+
+  .profile-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .profile-avatar {
+    margin: 0 auto;
+  }
+
+  .profile-meta {
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .profile-name {
+    font-size: 20px;
+  }
+
+  .settings-profile-banner .banner-title {
+    font-size: 26px;
+  }
+}
+
+/* Botão Branco "Alterar senha ↗" idêntico à imagem 4 */
+.btn-change-password {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ffffff;
+  color: #ea580c;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.2s ease;
+  text-decoration: none;
+  /* Prevent visual artifacts */
+  outline: none;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-change-password:focus {
+  outline: 2px solid #ea580c;
+  outline-offset: 2px;
+}
+
+.btn-change-password:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  background-color: #fafafa;
+}
+
+/* Ensure no pseudo-elements create duplicates */
+.btn-change-password::before,
+.btn-change-password::after {
+  content: none !important;
+  display: none !important;
+}
+
+.btn-change-password svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.5;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-change-password:hover svg {
+  transform: translate(2px, -2px);
+}
+
+/* =============================================================================
+   SEÇÃO DE TEMAS (MOCKUPS: SISTEMA, CLARO, ESCURO) - IMAGEM 4
+   ============================================================================= */
+.settings-section {
+  margin-bottom: 36px;
+}
+
+.settings-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.settings-section-desc {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.themes-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 780px;
+  width: 100%;
+  margin: 0 auto;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .themes-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .themes-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.theme-card-option {
+  min-width: 0;
+}
+
+.theme-card-option {
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 220px;
+  min-width: 0;
+  justify-content: space-between;
+}
+
+.theme-card-option:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-card-option.active {
+  border-color: var(--senai-red);
+  box-shadow: 0 0 0 3px rgba(195, 22, 28, 0.12);
+}
+
+/* Mini Mockup Visual de Demonstração dentro de cada card */
+.theme-mockup-frame {
+  height: 130px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  overflow: hidden;
+  margin-bottom: 12px;
+  display: flex;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Mockup: Sistema (Split 50% Escuro / 50% Claro) */
+.mockup-sistema {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.mockup-sistema-dark {
+  width: 50%;
+  background-color: #1a202c;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-right: 1px solid #334155;
+}
+
+.mockup-sistema-light {
+  width: 50%;
+  background-color: #ffffff;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Mockup: Claro (100% Branco com elementos cinza suave) */
+.mockup-claro {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Mockup: Escuro (100% Grafite/Azul escuro) */
+.mockup-escuro {
+  width: 100%;
+  background-color: #1a202c;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Barrinhas simuladas dentro dos mockups */
+.mockup-bar-header {
+  height: 14px;
+  border-radius: 4px;
+}
+.mockup-bar-body {
+  height: 22px;
+  border-radius: 4px;
+}
+.mockup-bar-sub {
+  height: 10px;
+  border-radius: 3px;
+  width: 60%;
+}
+
+/* Cores dos componentes no mockup claro */
+.mockup-claro .mockup-bar-header,
+.mockup-sistema-light .mockup-bar-header {
+  background-color: #e2e8f0;
+}
+.mockup-claro .mockup-bar-body,
+.mockup-sistema-light .mockup-bar-body {
+  background-color: #f1f5f9;
+}
+.mockup-claro .mockup-bar-sub,
+.mockup-sistema-light .mockup-bar-sub {
+  background-color: #e2e8f0;
+}
+
+/* Cores dos componentes no mockup escuro */
+.mockup-escuro .mockup-bar-header,
+.mockup-sistema-dark .mockup-bar-header {
+  background-color: #334155;
+}
+.mockup-escuro .mockup-bar-body,
+.mockup-sistema-dark .mockup-bar-body {
+  background-color: #273142;
+}
+.mockup-escuro .mockup-bar-sub,
+.mockup-sistema-dark .mockup-bar-sub {
+  background-color: #334155;
+}
+
+.theme-card-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.theme-card-option.active .theme-card-label {
+  color: var(--senai-red);
+}
+
+.theme-active-icon {
+  display: none;
+  width: 16px;
+  height: 16px;
+  color: var(--senai-red);
+  flex-shrink: 0;
+}
+
+.theme-card-option.active .theme-active-icon {
+  display: inline-flex;
+}
+
+.theme-active-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* =============================================================================
+   SEÇÃO DE ACESSIBILIDADE (IDÊNTICA À IMAGEM 5)
+   Tamanho de fonte, VLibras, Modo Daltônico, Modo Monocromático
+   ============================================================================= */
+.settings-card-item {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  min-height: 72px;
+}
+
+.settings-card-item:hover {
+  border-color: #cbd5e1;
+}
+
+.settings-item-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: 1;
+}
+
+/* Ícones coloridos dos cards de acessibilidade */
+.setting-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.badge-icon-font {
+  background-color: var(--senai-red);
+}
+
+.badge-icon-monocromatico {
+  background-color: #4b5563;
+}
+
+.setting-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.setting-item-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.setting-item-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Dropdown de Seleção de Fonte */
+.setting-select-control {
+  min-width: 150px;
+  padding: 9px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.setting-select-control:focus {
+  outline: none;
+  border-color: var(--senai-red);
+}
+
+/* =============================================================================
+   TOGGLE SWITCH (INTERRUPTOR VERMELHO IDÊNTICO À IMAGEM 5)
+   ============================================================================= */
+.switch-control {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.switch-control input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider-toggle {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e2e8f0;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 34px;
+}
+
+[data-theme="dark"] .slider-toggle {
+  background-color: #334155;
+}
+
+.slider-toggle::before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #ffffff;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Quando Ativado (Vermelho SENAI idêntico à imagem 5) */
+.switch-control input:checked + .slider-toggle {
+  background-color: var(--senai-red);
+}
+
+.switch-control input:checked + .slider-toggle::before {
+  transform: translateX(22px);
+}
