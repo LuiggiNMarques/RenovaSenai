@@ -985,31 +985,40 @@ body {
   z-index: 1000;
 }
 
-.floating-btn-vlibras {
+/* Botão VLibras Flutuante - Azul Escuro Oficial do Governo Federal */
+.floating-btn-vlibras,
+[vw] [vw-access-button],
+div[vw-access-button] {
   width: 44px;
   height: 48px;
-  background-color: #0284c7;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px 0 0 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: -2px 4px 12px rgba(2, 132, 199, 0.35);
-  transition: width 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #0c326f !important; /* Azul escuro oficial VLibras */
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px 0 0 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: -2px 4px 14px rgba(12, 50, 111, 0.45) !important;
+  transition: width 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease !important;
+  z-index: 10001 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
-.floating-btn-vlibras:hover {
-  width: 52px;
-  background-color: #0369a1;
+.floating-btn-vlibras:hover,
+[vw] [vw-access-button]:hover,
+div[vw-access-button]:hover {
+  width: 52px !important;
+  background-color: #071d42 !important; /* Azul escuro mais fechado no hover */
+  box-shadow: -3px 6px 18px rgba(7, 29, 66, 0.6) !important;
 }
 
-/* Estado ativo do VLibras - pulsa e fica mais evidente */
-.floating-btn-vlibras.active {
-  background-color: #06b6d4;
-  box-shadow: -2px 4px 20px rgba(6, 182, 212, 0.6);
-  animation: vlibras-pulse 2s infinite;
+/* Estado ativo do VLibras */
+.floating-btn-vlibras.active,
+[vw] [vw-access-button].active {
+  background-color: #0c326f !important;
+  box-shadow: -2px 4px 20px rgba(12, 50, 111, 0.7) !important;
 }
 
 @keyframes vlibras-pulse {
@@ -1321,19 +1330,5 @@ body {
 
 
 
-/* ============================================================
-   OCULTAR WIDGET VLIBRAS NATIVO (quadrado azul do gov.br)
-   ============================================================ */
-[vw], [vw-access-button], .vw-plugin-top-wrapper,
-div[class*="vlibras"], div[id*="vlibras"],
-#div-libras, .div-libras {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  position: absolute !important;
-  left: -9999px !important;
-}
+/* Integração VLibras ativa */
+[vw] { z-index: 10000; }

@@ -25,8 +25,6 @@
   <!-- jsPDF para exportação de PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
-  <!-- VLibras - API Oficial de Tradução para Libras -->
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js" defer></script>
 </head>
 
 <body>
@@ -1541,19 +1539,24 @@ ABA 7: RELATÓRIOS OFICIAIS (FASE 9)
   <!-- =========================================================================
        WIDGETS FLUTUANTES (IDÊNTICOS ÀS IMAGENS 2, 4 E 5)
        ========================================================================= -->
-  <div class="floating-widgets-stack">
-    <!-- Botão VLibras Flutuante Azul com Mãozinha -->
-    <button type="button" id="floatingVlibrasWidget" class="floating-btn-vlibras"
-      onclick="window.configuracoes.toggleVLibras(!window.configuracoes.vlibrasAtivo)"
-      title="VLibras - Ativar/Desativar Tradução para Libras">
+  <!-- =========================================================================
+       VLIBRAS - PLUGIN OFICIAL DE TRADUÇÃO EM LIBRAS (GOVERNO FEDERAL)
+       Estrutura oficial exigida pela API do VLibras + Botão Azul Escuro
+       ========================================================================= -->
+  <div vw class="enabled">
+    <div vw-access-button class="active floating-btn-vlibras" id="floatingVlibrasWidget"
+      onclick="window.configuracoes && window.configuracoes.toggleVLibras && window.configuracoes.toggleVLibras(!window.configuracoes.vlibrasAtivo)"
+      title="VLibras - Tradução para Libras (Acessibilidade)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path>
         <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path>
         <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path>
-        <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15">
-        </path>
+        <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path>
       </svg>
-    </button>
+    </div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
   </div>
 
   <!-- Botão Flutuante Atendimento Educação Online (Canto Inferior Direito - Imagens 2 e 4) -->
@@ -2001,6 +2004,31 @@ ABA 7: RELATÓRIOS OFICIAIS (FASE 9)
   <script src="js/assistente.js?v=10"></script>
   <script src="js/coordenador.js?v=10"></script>
   <script src="js/app.js?v=10"></script>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    (function initOfficialVLibras() {
+      function start() {
+        if (window.VLibras && window.VLibras.Widget) {
+          if (!window._vlibrasLoaded) {
+            window._vlibrasLoaded = true;
+            try {
+              new window.VLibras.Widget('https://vlibras.gov.br/app');
+              console.log('[VLibras] Widget oficial instanciado com sucesso.');
+            } catch(e) {
+              console.warn('[VLibras] Erro ao instanciar widget:', e);
+            }
+          }
+        } else {
+          setTimeout(start, 500);
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', start);
+      } else {
+        start();
+      }
+    })();
+  </script>
 </body>
 
 </html>

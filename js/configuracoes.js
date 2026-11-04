@@ -10,7 +10,7 @@ class ConfiguracoesService {
   constructor() {
     this.theme = localStorage.getItem('renova_senai_theme') || 'sistema';
     this.fontSize = localStorage.getItem('renova_senai_fontsize') || 'normal';
-    this.vlibrasAtivo = localStorage.getItem('renova_senai_vlibras') !== 'false';
+    this.vlibrasAtivo = localStorage.getItem('renova_senai_vlibras') === 'true';
     this.monocromaticoAtivo = localStorage.getItem('renova_senai_monocromatico') === 'true';
     this.vlibrasInstance = null; // Instância do widget VLibras
 
@@ -106,17 +106,25 @@ class ConfiguracoesService {
     localStorage.setItem('renova_senai_vlibras', ativo);
     this.aplicarAcessibilidade();
     this.atualizarBotaoVLibras();
+
+    // Se houver wrapper oficial do VLibras, sincroniza a visibilidade
+    const vwWrapper = document.querySelector('.vw-plugin-top-wrapper');
+    if (vwWrapper) {
+      vwWrapper.style.display = this.vlibrasAtivo ? '' : 'none';
+    }
   }
 
   atualizarBotaoVLibras() {
     const btn = document.getElementById('floatingVlibrasWidget');
     if (btn) {
+      btn.style.display = 'flex';
+      btn.style.backgroundColor = '#0c326f';
       if (this.vlibrasAtivo) {
         btn.classList.add('active');
-        btn.title = 'VLibras - Desativar Tradução para Libras';
+        btn.title = 'VLibras - Tradução para Libras (Ativo)';
       } else {
         btn.classList.remove('active');
-        btn.title = 'VLibras - Ativar Tradução para Libras';
+        btn.title = 'VLibras - Tradução para Libras';
       }
     }
   }
@@ -139,10 +147,10 @@ class ConfiguracoesService {
       this.removerVLibras();
     }
 
-    // VLibras floating button visibility
+    // VLibras floating button: always visible (toggle controls VLibras state only)
     const vlibrasBtn = document.getElementById('floatingVlibrasWidget');
     if (vlibrasBtn) {
-      vlibrasBtn.style.display = this.vlibrasAtivo ? 'flex' : 'none';
+      vlibrasBtn.style.display = 'flex';
     }
 
     // Modo Monocromático - aplica filter no wrapper (não afeta elementos fixed)
@@ -156,41 +164,38 @@ class ConfiguracoesService {
   }
 
   inicializarVLibras() {
-    // Verifica se o VLibras já foi carregado (script cria window.VLibrasWidget e window.VLibras.Widget)
-    if (window.VLibrasWidget || (window.VLibras && window.VLibras.Widget)) {
+    // O script vlibras-plugin.js injeta o elemento <div vw> com o widget completo.
+    // Verifica se o script já criou o construtor VLibras.Widget
+    if (typeof window.VLibras !== 'undefined' && window.VLibras.Widget) {
       try {
-        // Remove instância anterior se existir
-        if (this.vlibrasInstance) {
-          this.vlibrasInstance.destroy();
+        if (!this.vlibrasInstance) {
+          this.vlibrasInstance = new window.VLibras.Widget('https://vlibras.gov.br/app');
+          console.log('[VLibras] Widget inicializado com sucesso');
         }
-        
-        // Inicializa o widget VLibras oficial
-        // O script cria window.VLibras.Widget como construtor
-        this.vlibrasInstance = new window.VLibras.Widget('https://vlibras.gov.br/app');
-        console.log('[VLibras] Widget inicializado com sucesso');
+        // Mostra o wrapper do plugin (tradução ativa)
+        const vwWrapper = document.querySelector('.vw-plugin-top-wrapper');
+        if (vwWrapper) vwWrapper.style.display = '';
       } catch (error) {
         console.error('[VLibras] Erro ao inicializar:', error);
       }
     } else {
       // Se o script ainda não carregou, tenta novamente após um tempo
       console.log('[VLibras] Aguardando carregamento do script...');
-      setTimeout(() => this.inicializarVLibras(), 500);
+      if (!this._vlibrasRetries) this._vlibrasRetries = 0;
+      this._vlibrasRetries++;
+      if (this._vlibrasRetries < 20) {
+        setTimeout(() => this.inicializarVLibras(), 800);
+      } else {
+        console.warn('[VLibras] Script não carregou após 20 tentativas.');
+      }
     }
   }
 
   removerVLibras() {
-    if (this.vlibrasInstance) {
-      try {
-        this.vlibrasInstance.destroy();
-        this.vlibrasInstance = null;
-        console.log('[VLibras] Widget removido');
-      } catch (error) {
-        console.error('[VLibras] Erro ao remover:', error);
-      }
-    }
-    // Remove o elemento do widget se existir
-    const widget = document.querySelector('.vw-plugin-wrapper, [vw], .vlibras');
-    if (widget) widget.remove();
+    // Apenas oculta o widget de tradução, sem destruir a instância
+    const vwWrapper = document.querySelector('.vw-plugin-top-wrapper');
+    if (vwWrapper) vwWrapper.style.display = 'none';
+    console.log('[VLibras] Widget ocultado');
   }
 
   atualizarUI() {
