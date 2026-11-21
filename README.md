@@ -19,6 +19,17 @@ Sistema Web desenvolvido para o **Portal do Docente SENAI-SP**, inspirado no lay
    - Cartão de login com campos "Usuário", "Senha", botão vermelho "Avançar" e atalhos rápidos para preenchimento de teste (*Docente* e *Coordenação*).
    - Widgets flutuantes: **VLibras** (azul), **Acessibilidade** (vermelho) e pílula **Atendimento Educação Online** com fone no canto inferior direito.
 
+2.1. **Tela Oficial de Seleção de Perfil Pós-Login**:
+   - Saudação personalizada dinâmica (*"Olá, [Nome]!"*).
+   - Faixa azul superior institucional SENAI.
+   - 4 Cartões interativos de perfis:
+     - **Coordenação**: Acompanhamento e gestão acadêmica (ícone azul de equipe).
+     - **Professor**: Ambiente de trabalho e funcionalidades acadêmicas (seleção azul com rádio circular).
+     - **Aluno**: Ambiente acadêmico do aluno com boletim, notas e frequência (seleção vermelha com realce em rosa/vermelho claro).
+     - **Orientador**: Orientação acadêmica, supervisão de TCC e cronograma de bancas (ícone azul de capelo).
+   - Botão de ação dinâmico (*"Entrar como [Perfil]"*) em vermelho SENAI.
+   - Alternador rápido *"Trocar Perfil"* no cabeçalho do portal para navegação fluida entre os ambientes.
+
 3. **Aba de Configurações e Meu Perfil (Imagens 4 e 5 - IDÊNTICA)**:
    - **Banner Laranja com Grade (*Grid Pattern*)**: título *"Meu perfil"*, subtítulo *"Atualize suas informações básicas de perfil. ✨"* e botão branco *"Alterar senha ↗"*.
    - **Seção "Temas"**: 3 cartões interativos lado a lado:

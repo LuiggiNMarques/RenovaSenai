@@ -1,0 +1,772 @@
+/* =============================================================================
+   RENOVA SENAI - PORTAL DO ALUNO / FREQUÊNCIA (DESIGN OFICIAL DE REFERÊNCIA)
+   Visão Geral & Histórico de Aulas
+   ============================================================================= */
+
+/* Container da Página do Aluno */
+.aluno-freq-container {
+  padding: 8px 10px 40px 10px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: var(--font-family, 'Segoe UI', -apple-system, sans-serif);
+}
+
+/* Cabeçalho da Página: Título + Breadcrumb */
+.aluno-freq-page-header {
+  margin-bottom: 20px;
+}
+
+.aluno-freq-main-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f2744;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.3px;
+}
+
+.aluno-freq-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.aluno-freq-breadcrumb .sep {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.aluno-freq-breadcrumb .active {
+  color: #0f2744;
+  font-weight: 700;
+}
+
+/* Card do Curso / Turma */
+.aluno-course-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 22px;
+}
+
+.aluno-course-card-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.aluno-course-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #e0f2fe;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.aluno-course-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f2744;
+  margin: 0 0 5px 0;
+  letter-spacing: -0.2px;
+}
+
+.aluno-course-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+  color: #64748b;
+  flex-wrap: wrap;
+}
+
+.aluno-course-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.aluno-course-meta-item svg {
+  color: #94a3b8;
+}
+
+.aluno-course-meta-sep {
+  color: #cbd5e1;
+}
+
+.aluno-badge-matricula-ativa {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #e8f7ee;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Abas de Navegação (Visão Geral / Histórico de Aulas) */
+.aluno-freq-tabs-nav {
+  display: flex;
+  gap: 28px;
+  border-bottom: 1.5px solid #e2e8f0;
+  margin-bottom: 22px;
+  padding-left: 4px;
+}
+
+.aluno-freq-tab-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 10px 4px 12px 4px;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.aluno-freq-tab-button:hover {
+  color: #0056b3;
+}
+
+.aluno-freq-tab-button.active {
+  color: #0056b3;
+  font-weight: 800;
+}
+
+.aluno-freq-tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1.5px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #0056b3;
+  border-radius: 3px 3px 0 0;
+}
+
+.aluno-freq-tab-button svg {
+  color: inherit;
+}
+
+/* =============================================================================
+   ABA 1: VISÃO GERAL
+   ============================================================================= */
+.aluno-vg-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+/* Coluna Esquerda */
+.aluno-vg-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Card 1: Faltas no período */
+.aluno-vg-faltas-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px 20px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.aluno-vg-faltas-headline {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f2744;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.aluno-vg-faltas-headline .num {
+  font-size: 34px;
+  font-weight: 900;
+  color: #0f2744;
+}
+
+.aluno-vg-faltas-sub {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.aluno-vg-faltas-badge {
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 10px 16px;
+  border-radius: 8px;
+  display: block;
+  letter-spacing: -0.2px;
+}
+
+/* Card 2: Últimos dias com falta */
+.aluno-vg-ultimos-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.aluno-vg-ultimos-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f2744;
+  margin-bottom: 14px;
+}
+
+.aluno-vg-ultimos-header svg {
+  color: #0284c7;
+}
+
+.aluno-vg-ultimos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.aluno-vg-ultimos-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: #334155;
+}
+
+.aluno-vg-ultimos-item .dia {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.aluno-vg-ultimos-item .aulas {
+  font-weight: 800;
+  color: #0f2744;
+}
+
+.btn-aluno-ver-todos {
+  width: 100%;
+  background: transparent;
+  color: #0056b3;
+  border: 1.5px solid #0056b3;
+  border-radius: 20px;
+  padding: 7px 16px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-aluno-ver-todos:hover {
+  background: #f0f7ff;
+}
+
+/* Coluna Direita: Frequência por UC */
+.aluno-vg-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.aluno-vg-table-header {
+  background: #002b5c;
+  color: #ffffff;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+.aluno-vg-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.aluno-vg-table th {
+  background: #f8fafc;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 11px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.aluno-vg-table th.center {
+  text-align: center;
+}
+
+.aluno-vg-table td {
+  padding: 13px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13.5px;
+  color: #1e293b;
+}
+
+.aluno-vg-table td.center {
+  text-align: center;
+  font-weight: 700;
+}
+
+.aluno-vg-table tr:last-child td {
+  border-bottom: none;
+}
+
+.aluno-vg-table tr:hover td {
+  background: #f8fafc;
+}
+
+/* Badges de % Presença */
+.aluno-pct-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.aluno-pct-badge.green-dark {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.aluno-pct-badge.green {
+  background: #e8f7ee;
+  color: #16a34a;
+}
+
+.aluno-pct-badge.yellow {
+  background: #fef9c3;
+  color: #a16207;
+}
+
+.aluno-pct-badge.orange {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.aluno-pct-badge.red {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* =============================================================================
+   ABA 2: HISTÓRICO DE AULAS
+   ============================================================================= */
+
+/* 4 Cards de Métricas (KPIs) */
+.aluno-kpis-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.aluno-kpi-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.aluno-kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.aluno-kpi-icon.blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.aluno-kpi-icon.green {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.aluno-kpi-icon.red {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.aluno-kpi-label {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 2px;
+}
+
+.aluno-kpi-val {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f2744;
+  line-height: 1.1;
+}
+
+/* Barra de Filtros */
+.aluno-filter-bar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.aluno-filter-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.aluno-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aluno-filter-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.aluno-filter-select {
+  padding: 7px 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1e293b;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  min-width: 220px;
+  cursor: pointer;
+}
+
+.aluno-filter-period-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.btn-aluno-filtrar {
+  background: #0066cc;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.btn-aluno-filtrar:hover {
+  background: #0052a3;
+}
+
+/* Tabela de Histórico de Aulas */
+.aluno-hist-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.aluno-hist-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.aluno-hist-table thead {
+  background: #002b5c;
+}
+
+.aluno-hist-table th {
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 12px 16px;
+  text-align: left;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.aluno-hist-table th:last-child {
+  border-right: none;
+}
+
+.aluno-hist-table th.center {
+  text-align: center;
+}
+
+.aluno-hist-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+  color: #334155;
+}
+
+.aluno-hist-table td.center {
+  text-align: center;
+}
+
+.aluno-hist-table td.data-cell {
+  font-weight: 700;
+  color: #0f2744;
+}
+
+.aluno-hist-table td.conteudo-cell {
+  color: #475569;
+  line-height: 1.4;
+}
+
+.aluno-hist-table tr:hover td {
+  background: #f8fafc;
+}
+
+/* Badges Presente / Falta */
+.aluno-status-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.aluno-status-badge.presente {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.aluno-status-badge.falta {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.aluno-status-badge.justificada {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.aluno-status-badge.dispensado {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+/* Paginação da Tabela */
+.aluno-hist-pagination {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-top: 1px solid #f1f5f9;
+}
+
+.aluno-hist-pagination-info {
+  font-size: 12.5px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.aluno-hist-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.aluno-page-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #475569;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.aluno-page-btn:hover {
+  background: #f1f5f9;
+  color: #0f2744;
+}
+
+.aluno-page-btn.active {
+  background: #002b5c;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+/* =============================================================================
+   RESPONSIVIDADE
+   ============================================================================= */
+@media (max-width: 992px) {
+  .aluno-vg-grid {
+    grid-template-columns: 1fr;
+  }
+  .aluno-kpis-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .aluno-course-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .aluno-kpis-grid {
+    grid-template-columns: 1fr;
+  }
+  .aluno-filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .aluno-filter-select {
+    min-width: 100%;
+  }
+  .btn-aluno-filtrar {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+/* =============================================================================
+   SUPORTE AO TEMA ESCURO (DARK MODE)
+   ============================================================================= */
+[data-theme="dark"] .aluno-freq-main-title {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .aluno-freq-breadcrumb .active {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .aluno-course-card,
+[data-theme="dark"] .aluno-vg-faltas-card,
+[data-theme="dark"] .aluno-vg-ultimos-card,
+[data-theme="dark"] .aluno-vg-table-card,
+[data-theme="dark"] .aluno-kpi-card,
+[data-theme="dark"] .aluno-filter-bar,
+[data-theme="dark"] .aluno-hist-table-card,
+[data-theme="dark"] .aluno-hist-pagination {
+  background: var(--bg-card, #1c1f26);
+  border-color: var(--border-color, #2e3541);
+}
+
+[data-theme="dark"] .aluno-course-title,
+[data-theme="dark"] .aluno-vg-faltas-headline,
+[data-theme="dark"] .aluno-vg-faltas-headline .num,
+[data-theme="dark"] .aluno-vg-ultimos-header,
+[data-theme="dark"] .aluno-vg-ultimos-item .dia,
+[data-theme="dark"] .aluno-vg-ultimos-item .aulas,
+[data-theme="dark"] .aluno-kpi-val,
+[data-theme="dark"] .aluno-hist-table td.data-cell {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .aluno-vg-table th {
+  background: rgba(255, 255, 255, 0.04);
+  color: #94a3b8;
+  border-bottom-color: #2e3541;
+}
+
+[data-theme="dark"] .aluno-vg-table td {
+  color: #e2e8f0;
+  border-bottom-color: #2e3541;
+}
+
+[data-theme="dark"] .aluno-vg-table tr:hover td,
+[data-theme="dark"] .aluno-hist-table tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="dark"] .aluno-filter-select,
+[data-theme="dark"] .aluno-filter-period-box {
+  background: var(--bg-input, #20242c);
+  border-color: #3b4252;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .aluno-hist-table td {
+  color: #cbd5e1;
+  border-bottom-color: #2e3541;
+}
+
+[data-theme="dark"] .aluno-page-btn {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .aluno-page-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f1f5f9;
+}

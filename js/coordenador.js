@@ -108,6 +108,56 @@ class CoordenadorController {
         </div>
       </div>
     `;
+
+    // Alertas de Encaminhamentos da Orientação Educacional
+    const encaminhados = (window.db && window.db.data && window.db.data.atendimentosOrientacao || [])
+      .filter(a => a.encaminhamento === 'COORDENACAO');
+
+    let elAlertas = document.getElementById('coordAlertasOrientacaoContainer');
+    if (!elAlertas) {
+      elAlertas = document.createElement('div');
+      elAlertas.id = 'coordAlertasOrientacaoContainer';
+      if (el.parentNode) {
+        el.parentNode.insertBefore(elAlertas, el.nextSibling);
+      }
+    }
+
+    if (elAlertas) {
+      if (encaminhados.length > 0) {
+        elAlertas.innerHTML = `
+          <div style="background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:10px; padding:16px; margin:18px 0; box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:18px;">⚠️</span>
+                <strong style="color:#92400e; font-size:13.5px;">Encaminhamentos da Orientação Educacional (${encaminhados.length})</strong>
+              </div>
+              <span style="font-size:11.5px; background:#fef3c7; color:#92400e; padding:3px 10px; border-radius:9999px; font-weight:700;">Ação Intersetorial Requerida</span>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:12px;">
+              ${encaminhados.map(enc => {
+                const aluno = window.db.getAlunoById(enc.alunoId);
+                const nome = aluno ? aluno.nome : `Aluno #${enc.alunoId}`;
+                return `
+                  <div style="background:#ffffff; border:1px solid #fef08a; border-radius:8px; padding:12px; font-size:12.5px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                      <strong style="color:#0f172a;">${nome}</strong>
+                      <span style="font-size:11px; color:#64748b;">${enc.data}</span>
+                    </div>
+                    <div style="color:#64748b; font-size:11.5px; margin-bottom:6px;">Foco: <strong>${enc.foco}</strong> • Tipo: ${enc.tipo}</div>
+                    <div style="color:#334155; margin-bottom:8px; line-height:1.4;"><em>"${enc.resumo}"</em></div>
+                    ${enc.combinados ? `<div style="font-size:11px; color:#b45309; background:#fffdf5; padding:4px 8px; border-radius:4px; border:1px dashed #fde68a;"><strong>Combinados:</strong> ${enc.combinados}</div>` : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+        elAlertas.style.display = 'block';
+      } else {
+        elAlertas.style.display = 'none';
+        elAlertas.innerHTML = '';
+      }
+    }
   }
 
   // ─── LISTAGEM DE TURMAS ──────────────────────────────────────────────────────
@@ -134,8 +184,8 @@ class CoordenadorController {
       const sol = self._getSolicitacoes().find(function(s) { return s.turmaId === t.id; });
       const statusDiario = sol
         ? (sol.status === 'APROVADO'
-          ? '<span class="coord-badge badge-aprovado">Fechado</span>'
-          : '<span class="coord-badge badge-aguardando"> Aguardando</span>')
+          ? '<span class="coord-badge badge-aprovado">&#10003; Fechado</span>'
+          : '<span class="coord-badge badge-aguardando">&#9203; Aguardando</span>')
         : '<span class="coord-badge badge-aberto">Aberto</span>';
       const statusTurma = t.status === 'EM_ANDAMENTO'
         ? '<span class="coord-badge badge-ativo">Em Andamento</span>'
@@ -187,11 +237,19 @@ class CoordenadorController {
     const el = document.getElementById('coordFechamentoLista');
     if (!el) return;
 
-    const solicitacoes = this._getSolicitacoes().filter(function(s) { return s.status === 'AGUARDANDO'; });
+    // Regra SENAI: Só exibe na fila da coordenação turmas onde 100% dos professores responsáveis fecharam sua etapa
+    const solicitacoes = this._getSolicitacoes().filter(function(s) {
+      if (s.status !== 'AGUARDANDO') return false;
+      const turma = (window.db.data.turmas || []).find(function(t) { return t.id === s.turmaId; });
+      if (turma && turma.professoresResponsaveis && turma.professoresResponsaveis.length > 0) {
+        return turma.professoresResponsaveis.every(function(p) { return p.fechado === true; });
+      }
+      return true;
+    });
     const self = this;
 
     if (solicitacoes.length === 0) {
-      el.innerHTML = '<div class="coord-empty-state" style="padding:32px 0;"><p>Nenhum diário aguardando aprovação. </p></div>';
+      el.innerHTML = '<div class="coord-empty-state" style="padding:32px 0;"><p>Nenhum diário aguardando aprovação ou com todas as etapas docentes concluídas. &#10003;</p></div>';
       return;
     }
 
@@ -207,6 +265,24 @@ class CoordenadorController {
       const freqMedia = freqs.length ? (freqs.reduce(function(s,v) { return s+v; }, 0) / freqs.length).toFixed(1) : '—';
       const emRisco = alunos.filter(function(a) { return a.aluno.statusMatricula === 'ATIVO' && (a.media < 70 || a.freqPorcentagem < 75); }).length;
 
+      // Checklist dos professores responsáveis da turma
+      const profsResponsaveis = (turma && turma.professoresResponsaveis) ? turma.professoresResponsaveis : [];
+      const checklistHtml = profsResponsaveis.length ? `
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px 12px; margin:10px 0; font-size:12px;">
+          <strong style="color:#0f172a; display:block; margin-bottom:4px;">Checklist de Professores Responsáveis:</strong>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            ${profsResponsaveis.map(p => `
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span>${p.nome} <em style="color:#64748b;">(${p.papel || 'Docente'})</em></span>
+                <span class="badge ${p.fechado ? 'bg-success text-white' : 'bg-warning text-dark'}" style="font-size:10px; padding:2px 6px; border-radius:4px;">
+                  ${p.fechado ? '✓ Etapa Concluída' : '⏳ Pendente'}
+                </span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : '';
+
       return '<div class="coord-fechamento-card">'
         + '<div class="fechamento-card-header">'
         + '<div>'
@@ -216,20 +292,21 @@ class CoordenadorController {
         + (docente ? docente.nome.split(' ').slice(0,2).join(' ') : '—')
         + '</strong> em ' + (sol.data || '') + '</div>'
         + '</div>'
-        + '<span class="coord-badge badge-aguardando">Aguardando Aprovação</span>'
+        + '<span class="coord-badge badge-aguardando">Aguardando Aprovação (100% Docente)</span>'
         + '</div>'
+        + checklistHtml
         + '<div class="fechamento-metricas">'
         + '<div class="fechamento-metrica"><span class="metrica-val">' + totalAtivos + '</span><span class="metrica-label">Alunos Ativos</span></div>'
         + '<div class="fechamento-metrica"><span class="metrica-val">' + mediaGeral + '</span><span class="metrica-label">Média Geral</span></div>'
         + '<div class="fechamento-metrica"><span class="metrica-val">' + freqMedia + '%</span><span class="metrica-label">Freq. Média</span></div>'
         + '<div class="fechamento-metrica' + (emRisco > 0 ? ' metrica-alerta' : '') + '"><span class="metrica-val">' + emRisco + '</span><span class="metrica-label">Em Risco</span></div>'
         + '</div>'
-        + (sol.observacao ? '<div class="fechamento-obs"> <em>"' + sol.observacao + '"</em></div>' : '')
+        + (sol.observacao ? '<div class="fechamento-obs">&#128221; <em>"' + sol.observacao + '"</em></div>' : '')
         + '<div class="fechamento-actions">'
-        + '<button type="button" class="btn btn-outline btn-sm" onclick="window.coordenadorController.recusarFechamento(' + sol.id + ')">Devolver ao Docente</button>'
+        + '<button type="button" class="btn btn-outline btn-sm" onclick="window.coordenadorController.recusarFechamento(' + sol.id + ')">Devolver para Ajustes</button>'
         + '<button type="button" class="btn btn-primary" onclick="window.coordenadorController.aprovarFechamento(' + sol.id + ')">'
         + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
-        + ' Aprovar Fechamento Oficial</button>'
+        + ' Autorizar Fechamento</button>'
         + '</div></div>';
     }).join('');
   }
@@ -332,7 +409,7 @@ class CoordenadorController {
               const outra = (window.db.data.turmas || []).find(function(t) { return t.id === a.turmaId; });
               return outra && outra.periodo === turma.periodo && outra.status === 'EM_ANDAMENTO';
             });
-            return '<option value="' + u.id + '">' + u.nome + (conflito ? '  Conflito de Turno' : '') + '</option>';
+            return '<option value="' + u.id + '">' + u.nome + (conflito ? ' ⚠️ Conflito de Turno' : '') + '</option>';
           }).join('');
 
       const checkConflitoLive = function() {
@@ -468,23 +545,56 @@ class CoordenadorController {
       return;
     }
 
-    const solicitacoes = this._getSolicitacoes();
-    const ids = solicitacoes.map(function(s) { return s.id; });
-    const newId = ids.length > 0 ? Math.max.apply(null, ids) + 1 : 1;
+    // Validação de notas preenchidas (0 a 100)
+    const alunos = window.db ? window.db.getAlunosPorTurma(turmaId, 'TODOS') : [];
+    const turma = (window.db.data.turmas || []).find(function(t) { return t.id === turmaId; });
+    const ucId = (turma && turma.ucId) ? turma.ucId : 1;
+    const avaliacoes = window.db ? window.db.getAvaliacoesPorUC(turmaId, ucId) : [];
 
-    solicitacoes.push({
-      id: newId,
-      turmaId: turmaId,
-      docenteId: user.id,
-      observacao: obs,
-      data: new Date().toLocaleDateString('pt-BR'),
-      status: 'AGUARDANDO'
-    });
-    window.db.data.solicitacoesFechamento = solicitacoes;
-    this._persist();
+    let pendentes = 0;
+    if (avaliacoes.length > 0 && alunos.length > 0) {
+      alunos.forEach(function(al) {
+        avaliacoes.forEach(function(av) {
+          const nota = window.db.getNota(av.id, al.id);
+          if (nota === null || isNaN(nota) || nota === undefined) {
+            pendentes++;
+          }
+        });
+      });
+    }
+
+    if (pendentes > 0) {
+      const confirma = confirm(`Atenção: existem ${pendentes} nota(s) pendente(s) de lançamento nesta turma.\n\nDeseja preencher automaticamente com média padrão (75 pts) antes de solicitar autorização da coordenação?`);
+      if (confirma) {
+        alunos.forEach(function(al) {
+          avaliacoes.forEach(function(av) {
+            const nota = window.db.getNota(av.id, al.id);
+            if (nota === null || isNaN(nota) || nota === undefined) {
+              window.db.salvarNota(av.id, al.id, 75);
+            }
+          });
+        });
+      } else {
+        window.app.mostrarToast('Preencha todas as notas de 0 a 100 antes de solicitar o fechamento.', 'warning');
+        return;
+      }
+    }
+
+    const res = window.db.fecharEtapaDocente(turmaId, user ? user.id : 1, obs);
+    if (!res.success) {
+      window.app.mostrarToast(res.msg, 'warning');
+      return;
+    }
+
+    if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+      window.dispatchEvent(new CustomEvent('renova:db-updated'));
+    }
 
     window.app.fecharModal('modalSolicitarFechamento');
-    window.app.mostrarToast('Solicitação de fechamento enviada à coordenação!', 'success');
+    window.app.mostrarToast(res.msg, res.todosFechados ? 'success' : 'info');
+    if (window.app && window.app.renderizarHomeProfessor) {
+      window.app.renderizarHomeProfessor();
+    }
   }
 
   // ─── APROVAR / RECUSAR FECHAMENTO (COORDENADOR) ──────────────────────────────
@@ -503,22 +613,95 @@ class CoordenadorController {
     window.db.data.solicitacoesFechamento = solicitacoes;
     this._persist();
 
-    window.app.mostrarToast('Diário da turma ' + (turma ? turma.codigo : '') + ' aprovado e fechado oficialmente!', 'success');
+    // Notificação automática de aprovação
+    if (window.db && typeof window.db.adicionarNotificacao === 'function') {
+      window.db.adicionarNotificacao(
+        'APROVACAO',
+        `Fechamento Autorizado • ${turma ? turma.codigo : 'Turma'}`,
+        `A coordenação autorizou e oficializou o fechamento das médias e frequências da turma ${turma ? turma.codigo : ''}.`,
+        'Coordenação Pedagógica'
+      );
+    }
+    if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+      window.dispatchEvent(new CustomEvent('renova:db-updated'));
+    }
+
+    window.app.mostrarToast('Fechamento da turma ' + (turma ? turma.codigo : '') + ' autorizado e oficializado com sucesso!', 'success');
     this.renderDashboard();
     this.renderListaTurmas(); this.renderVisaoCurricular();
     this.renderPainelFechamento();
   }
 
   recusarFechamento(solId) {
+    // Exibir modal inline para coletar o motivo da devolução
+    const existing = document.getElementById('modalDevolverMotivo');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'modalDevolverMotivo';
+    overlay.className = 'modal-devolver-motivo';
+    overlay.innerHTML = `
+      <div class="modal-devolver-box">
+        <p class="modal-devolver-title">Devolver para Ajustes</p>
+        <p class="modal-devolver-sub">Informe ao docente o que deve ser corrigido antes do fechamento oficial.</p>
+        <textarea id="inputMotivoDevolver" class="modal-devolver-textarea"
+          placeholder="Ex: Notas dos alunos X e Y estão em branco. Frequência de 03/10 precisa ser conferida..."
+          rows="4" autofocus></textarea>
+        <div class="modal-devolver-actions">
+          <button type="button" class="btn btn-outline btn-sm"
+            onclick="document.getElementById('modalDevolverMotivo').remove()">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-primary"
+            onclick="window.coordenadorController._confirmarDevolucao(${solId})">
+            Devolver ao Docente
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    setTimeout(function() {
+      const ta = document.getElementById('inputMotivoDevolver');
+      if (ta) ta.focus();
+    }, 80);
+  }
+
+  _confirmarDevolucao(solId) {
+    const motivo = (document.getElementById('inputMotivoDevolver') || {}).value || '';
     const solicitacoes = this._getSolicitacoes();
     const sol = solicitacoes.find(function(s) { return s.id === solId; });
     if (!sol) return;
 
     sol.status = 'DEVOLVIDO';
+    sol.motivoDevolucao = motivo.trim();
+    sol.dataDevolucao = new Date().toLocaleDateString('pt-BR');
     window.db.data.solicitacoesFechamento = solicitacoes;
     this._persist();
 
-    window.app.mostrarToast('Diário devolvido ao docente para revisão.', 'info');
+    // Regra SENAI: Reabre as etapas dos docentes responsáveis ao devolver
+    if (window.db && typeof window.db.reabrirEtapasDocentes === 'function') {
+      window.db.reabrirEtapasDocentes(sol.turmaId);
+    }
+
+    const turma = (window.db.data.turmas || []).find(function(t) { return t.id === sol.turmaId; });
+
+    // Notificação automática de devolução
+    if (window.db && typeof window.db.adicionarNotificacao === 'function') {
+      window.db.adicionarNotificacao(
+        'DEVOLUCAO',
+        `Diário Devolvido para Ajustes • ${turma ? turma.codigo : 'Turma'}`,
+        `A coordenação devolveu o diário da turma ${turma ? turma.codigo : ''} para ajustes docentes. Motivo: ${motivo.trim() || 'Verificar notas ou frequência pendentes'}.`,
+        'Coordenação Pedagógica'
+      );
+    }
+    if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+      window.dispatchEvent(new CustomEvent('renova:db-updated'));
+    }
+
+    const overlay = document.getElementById('modalDevolverMotivo');
+    if (overlay) overlay.remove();
+
+    window.app.mostrarToast('Diário devolvido aos professores responsáveis com sucesso.', 'info');
     this.renderDashboard();
     this.renderPainelFechamento();
   }
@@ -574,16 +757,7 @@ class CoordenadorController {
     });
     cursosPillsHtml += '</div>';
 
-    // 2. Banner explicativo da navegação em árvore
-    const introBanner = `
-      <div class="coord-tree-intro">
-        <div class="tree-intro-badge">ESTRUTURA HIERÁRQUICA DO CURSO</div>
-        <h3>${cursoAtual.nome} <span class="badge-code">${cursoAtual.codigo}</span></h3>
-        <p>Acompanhamento integrado de cada disciplina e a síntese consolidada de desempenho (médias, frequência e evasão) de cada turma em modo observador.</p>
-      </div>
-    `;
-
-    // 3. Disciplinas (UCs) com Turmas e Síntese integrada
+    // 2. Disciplinas (UCs) com Turmas e Síntese integrada (sem banner decorativo)
     let ucsHtml = '';
     if (ucs.length === 0) {
       ucsHtml = `
@@ -620,8 +794,8 @@ class CoordenadorController {
             const sol = self._getSolicitacoes().find(s => s.turmaId === turma.id);
             const statusDiarioBadge = sol
               ? (sol.status === 'APROVADO'
-                ? '<span class="coord-badge badge-aprovado">Diário Fechado</span>'
-                : '<span class="coord-badge badge-aguardando"> Aguardando Homologação</span>')
+                ? '<span class="coord-badge badge-aprovado">&#10003; Diário Fechado</span>'
+                : '<span class="coord-badge badge-aguardando">&#9203; Aguardando Homologação</span>')
               : '<span class="coord-badge badge-aberto">Diário Aberto</span>';
 
             const mediaColor = mediaNum >= 70 ? 'var(--color-success, #16a34a)' : (mediaNum >= 50 ? 'var(--color-warning, #d97706)' : 'var(--color-danger, #dc2626)');
@@ -639,47 +813,36 @@ class CoordenadorController {
                 </div>
 
                 <div class="turma-card-docente">
-                  <span class="docente-label">Docente da Turma:</span>
+                  <span class="docente-label">Docente:</span>
                   <strong>${docenteTurma ? docenteTurma.nome.split(' ').slice(0, 2).join(' ') : '— Não atribuído —'}</strong>
                 </div>
 
-                <!-- Painel da Síntese da Turma -->
-                <div class="turma-sintese-box">
-                  <div class="sintese-box-title">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
-                    SÍNTESE ACADÊMICA DA TURMA
+                <!-- Síntese compacta inline -->
+                <div class="turma-sintese-inline">
+                  <div class="sintese-inline-item">
+                    <span class="kpi-num" style="color: ${mediaColor};">${mediaGeral}</span>
+                    <span class="kpi-txt">Média</span>
                   </div>
-
-                  <div class="sintese-kpi-row">
-                    <div class="sintese-kpi-item">
-                      <span class="kpi-num" style="color: ${mediaColor};">${mediaGeral}</span>
-                      <span class="kpi-txt">Média</span>
-                    </div>
-                    <div class="sintese-kpi-item">
-                      <span class="kpi-num">${freqMedia}%</span>
-                      <span class="kpi-txt">Frequência</span>
-                    </div>
-                    <div class="sintese-kpi-item ${emRisco > 0 ? 'kpi-alerta' : ''}">
-                      <span class="kpi-num">${emRisco}</span>
-                      <span class="kpi-txt">Em Risco</span>
-                    </div>
-                    <div class="sintese-kpi-item">
-                      <span class="kpi-num">${totalAtivos}</span>
-                      <span class="kpi-txt">Ativos</span>
-                    </div>
+                  <div class="sintese-inline-item">
+                    <span class="kpi-num">${freqMedia}%</span>
+                    <span class="kpi-txt">Freq.</span>
                   </div>
-
-                  <div class="sintese-bar-track">
-                    <div class="sintese-bar-fill" style="width: ${mediaNum > 0 ? Math.min(100, mediaNum) : 0}%; background: ${mediaColor};"></div>
+                  <div class="sintese-inline-item ${emRisco > 0 ? 'kpi-alerta' : ''}">
+                    <span class="kpi-num">${emRisco}</span>
+                    <span class="kpi-txt">Risco</span>
+                  </div>
+                  <div class="sintese-inline-item">
+                    <span class="kpi-num">${totalAtivos}</span>
+                    <span class="kpi-txt">Ativos</span>
                   </div>
                 </div>
 
                 <div class="turma-card-actions">
                   <button type="button" class="btn btn-sm btn-outline" onclick="window.app.abrirDiarioComTurma(${turma.id})" title="Inspecionar Chamada em Modo Observador">
-                     Ver Diário
+                    👁️ Ver Diário
                   </button>
                   <button type="button" class="btn btn-sm btn-primary" onclick="window.app.abrirSinteseComTurma(${turma.id}, ${uc.id})" title="Inspecionar Síntese em Modo Observador">
-                     Ver Síntese
+                    👁️ Ver Síntese
                   </button>
                 </div>
               </div>
@@ -696,8 +859,8 @@ class CoordenadorController {
                 <h4 class="uc-title">${uc.nome}</h4>
               </div>
               <div class="uc-header-right">
-                <span class="uc-ch-badge"> ${uc.cargaHoraria}h</span>
-                <span class="uc-docente-badge"> Titular: ${docenteTitular ? docenteTitular.nome.split(' ').slice(0, 2).join(' ') : 'SENAI'}</span>
+                <span class="uc-ch-badge">&#9200; ${uc.cargaHoraria}h</span>
+                <span class="uc-docente-badge">&#128104;&#8205;&#127979; Titular: ${docenteTitular ? docenteTitular.nome.split(' ').slice(0, 2).join(' ') : 'SENAI'}</span>
               </div>
             </div>
 
@@ -713,7 +876,7 @@ class CoordenadorController {
       });
     }
 
-    el.innerHTML = cursosPillsHtml + introBanner + ucsHtml;
+    el.innerHTML = cursosPillsHtml + ucsHtml;
   }
 
   _bindEvents() {

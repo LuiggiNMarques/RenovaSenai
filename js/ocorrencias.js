@@ -152,11 +152,11 @@ class OcorrenciasController {
   obterBadgeStatus(status) {
     const s = (status || 'PENDENTE').toUpperCase();
     if (s === 'RESOLVIDO' || s === 'CONCLUIDO') {
-      return '<span class="portal-tag-pill" style="background:#dcfce7; color:#15803d; font-weight:700; font-size:11px;"> Resolvido</span>';
+      return '<span class="portal-tag-pill" style="background:#dcfce7; color:#15803d; font-weight:700; font-size:11px;">✅ Resolvido</span>';
     } else if (s === 'EM_ANALISE' || s === 'ANALISE') {
-      return '<span class="portal-tag-pill" style="background:#dbeafe; color:#1d4ed8; font-weight:700; font-size:11px;"> Em Análise</span>';
+      return '<span class="portal-tag-pill" style="background:#dbeafe; color:#1d4ed8; font-weight:700; font-size:11px;">🔍 Em Análise</span>';
     }
-    return '<span class="portal-tag-pill" style="background:#fef3c7; color:#b45309; font-weight:700; font-size:11px;"> Pendente</span>';
+    return '<span class="portal-tag-pill" style="background:#fef3c7; color:#b45309; font-weight:700; font-size:11px;">⏳ Pendente</span>';
   }
 
   abrirNovaOcorrenciaParaAluno(alunoId) {
@@ -257,6 +257,11 @@ class OcorrenciasController {
       status,
       autor: user ? user.nome : 'NATHAN SANTANA MATOS'
     });
+
+    if (window.db && window.db.persist) {
+      window.db.persist();
+    }
+    window.dispatchEvent(new CustomEvent('renova:db-updated'));
 
     window.app.fecharModal('modalNovaOcorrencia');
     window.app.mostrarToast('Ocorrência registrada com sucesso!', 'success');

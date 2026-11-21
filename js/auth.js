@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * RENOVA SENAI - AUTENTICAÇÃO E SESSÃO (auth.js)
- * Login por CPF ou E-mail, Perfis de Professor e Coordenação, e Controle de Acesso
+ * Login por CPF ou E-mail, Perfis de Coordenação, Professor, Aluno e Orientador
  * =============================================================================
  */
 
@@ -21,7 +21,6 @@ class AuthService {
         return null;
       }
     }
-    // Por padrão para agilizar navegação imediata se já logado
     return null;
   }
 
@@ -31,10 +30,9 @@ class AuthService {
   }
 
   login(identificador, senha) {
-    // Se o campo estiver vazio ou padrão, assume o docente Nathan Santana Matos
     let clean = (identificador || '').trim().toLowerCase();
     if (!clean) {
-      clean = 'professor@senai.br';
+      clean = 'mariana@senai.br';
     }
 
     // Busca usuário no banco local
@@ -43,29 +41,62 @@ class AuthService {
     // Se não encontrou usuário exato, mapeia inteligentemente pelo que foi digitado
     if (!usuario) {
       if (clean.includes('coord') || clean.includes('paulo')) {
-        usuario = window.db.getUsuarioById(2); // Paulo Ricardo (Coordenação)
+        usuario = window.db ? window.db.getUsuarioById(2) : null; // Paulo Ricardo (Coordenação)
+      } else if (clean.includes('mariana')) {
+        usuario = window.db ? window.db.getUsuarioById(8) : null; // Mariana Silva Rocha
+        if (!usuario) {
+          usuario = {
+            id: 8,
+            nome: 'MARIANA SILVA ROCHA',
+            email: 'mariana.silva@sp.senai.br',
+            cpf: '333.444.555-66',
+            perfil: 'PROFESSOR',
+            matriculaFuncional: 'SENAI-DOC-2025-102'
+          };
+        }
+      } else if (clean.includes('aluno') || clean.includes('gabriel') || clean.includes('yasmin') || clean.includes('111.222.333-44')) {
+        usuario = {
+          id: 52,
+          nome: 'Yasmin Ribeiro Costa',
+          email: 'yasmin.costa@aluno.senai.br',
+          cpf: '111.222.333-44',
+          perfil: 'ALUNO',
+          matriculaFuncional: 'SENAI-ALU-2026-052'
+        };
+      } else if (clean.includes('orientador')) {
+        usuario = {
+          id: 102,
+          nome: 'DR. MARCELO NOGUEIRA',
+          email: 'marcelo.orientador@sp.senai.br',
+          cpf: '555.666.777-88',
+          perfil: 'ORIENTADOR',
+          matriculaFuncional: 'SENAI-ORI-2024-015'
+        };
       } else {
-        usuario = window.db.getUsuarioById(1); // Nathan Santana Matos (Docente)
-        // Se o usuário digitou seu próprio e-mail ou CPF, atualiza a exibição
-        if (clean.includes('@') && clean !== 'professor@senai.br') {
-          usuario.email = clean;
-        } else if (clean.replace(/\D/g, '').length >= 6) {
-          usuario.cpf = identificador.trim();
+        usuario = window.db ? window.db.getUsuarioById(1) : null; // Nathan Santana Matos (Docente)
+        if (usuario) {
+          if (clean.includes('@') && clean !== 'professor@senai.br') {
+            usuario.email = clean;
+          } else if (clean.replace(/\D/g, '').length >= 6) {
+            usuario.cpf = identificador.trim();
+          }
         }
       }
     }
 
     if (!usuario) {
-      // Fallback padrão garantido
+      // Fallback padrão Mariana Silva Rocha garantido
       usuario = {
-        id: 1,
-        nome: 'NATHAN SANTANA MATOS',
-        email: 'matosnathan2015@gmail.com',
-        cpf: '562.636.938-43',
+        id: 8,
+        nome: 'MARIANA SILVA ROCHA',
+        email: 'mariana.silva@sp.senai.br',
+        cpf: '333.444.555-66',
         perfil: 'PROFESSOR',
-        matriculaFuncional: 'SENAI-DOC-2026-089'
+        matriculaFuncional: 'SENAI-DOC-2025-102'
       };
     }
+
+    const perfilInicial = usuario.perfilAtivo || usuario.perfil || 'PROFESSOR';
 
     this.saveSession({
       id: usuario.id,
@@ -73,10 +104,22 @@ class AuthService {
       email: usuario.email,
       cpf: usuario.cpf,
       perfil: usuario.perfil,
+      perfilAtivo: perfilInicial,
       matriculaFuncional: usuario.matriculaFuncional
     });
 
     return this.currentUser;
+  }
+
+  setPerfilAtivo(perfil) {
+    if (this.currentUser) {
+      this.currentUser.perfilAtivo = perfil.toUpperCase();
+      this.saveSession(this.currentUser);
+    }
+  }
+
+  getPerfilAtivo() {
+    return (this.currentUser && this.currentUser.perfilAtivo) || (this.currentUser && this.currentUser.perfil) || 'PROFESSOR';
   }
 
   logout() {
@@ -94,11 +137,20 @@ class AuthService {
   }
 
   isProfessor() {
-    return this.currentUser && this.currentUser.perfil === 'PROFESSOR';
+    return this.getPerfilAtivo() === 'PROFESSOR';
   }
 
   isCoordenacao() {
-    return this.currentUser && (this.currentUser.perfil === 'COORDENACAO' || this.currentUser.perfil === 'ADMINISTRADOR');
+    const p = this.getPerfilAtivo();
+    return p === 'COORDENACAO' || p === 'ADMINISTRADOR';
+  }
+
+  isAluno() {
+    return this.getPerfilAtivo() === 'ALUNO';
+  }
+
+  isOrientador() {
+    return this.getPerfilAtivo() === 'ORIENTADOR';
   }
 }
 

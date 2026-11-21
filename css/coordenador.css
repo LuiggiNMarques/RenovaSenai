@@ -27,7 +27,7 @@
 }
 
 .role-badge-coordenador {
-  background: linear-gradient(135deg, #c3161c, #9b111c);
+  background: linear-gradient(135deg, #0284c7, #0369a1);
   color: white;
 }
 
@@ -74,9 +74,9 @@
 }
 
 .role-toggle-btn.active {
-  background: #c3161c;
+  background: #0284c7;
   color: white;
-  box-shadow: 0 3px 12px rgba(195,22,28,0.5);
+  box-shadow: 0 3px 12px rgba(2, 132, 199, 0.5);
 }
 
 .role-toggle-btn svg {
@@ -85,51 +85,48 @@
   flex-shrink: 0;
 }
 
-/* ─── HEADER DO PORTAL COORDENADOR ──────────────────────────────────────────── */
+/* ─── HEADER LIMPO DO PORTAL COORDENADOR ────────────────────────────────────── */
 
-.coord-portal-header {
-  background: linear-gradient(135deg, #1a0a0b 0%, #2d1215 50%, #1a0a0b 100%);
-  border-bottom: 2px solid #c3161c;
-  padding: 20px 24px;
+.coord-portal-header-clean {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
   margin-bottom: 24px;
-  border-radius: 12px;
-  position: relative;
-  overflow: hidden;
+  padding: 0 2px;
 }
 
-.coord-portal-header::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 20px,
-    rgba(195,22,28,0.03) 20px,
-    rgba(195,22,28,0.03) 21px
-  );
+.coord-header-clean-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.coord-header-title {
-  font-size: 22px;
+.coord-header-clean-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(2, 132, 199, 0.1);
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.coord-header-clean-title {
+  font-size: 20px;
   font-weight: 800;
-  color: white;
-  letter-spacing: -0.5px;
-  position: relative;
-  z-index: 1;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+  margin: 0;
 }
 
-.coord-header-subtitle {
+.coord-header-clean-sub {
   font-size: 12px;
-  color: rgba(255,255,255,0.5);
-  margin-top: 3px;
-  position: relative;
-  z-index: 1;
+  color: var(--text-muted);
+  margin: 2px 0 0 0;
 }
 
 .coord-header-actions {
@@ -146,8 +143,8 @@
 .coord-kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 28px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 900px) {
@@ -157,41 +154,40 @@
 .coord-kpi-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px 18px;
+  border-radius: 10px;
+  padding: 14px 16px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   transition: all 0.2s ease;
 }
 
 .coord-kpi-card:hover {
-  border-color: var(--senai-red);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(195,22,28,0.12);
+  border-color: rgba(2, 132, 199, 0.3);
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.08);
 }
 
 .coord-kpi-card.kpi-alert {
   border-color: #f59e0b;
-  background: rgba(245,158,11,0.05);
+  background: rgba(245,158,11,0.04);
 }
 
 .kpi-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.kpi-icon svg { width: 20px; height: 20px; }
+.kpi-icon svg { width: 18px; height: 18px; }
 
-.kpi-icon-turmas { background: rgba(195,22,28,0.15); color: #c3161c; }
-.kpi-icon-alunos { background: rgba(59,130,246,0.15); color: #3b82f6; }
-.kpi-icon-concluidas { background: rgba(16,185,129,0.15); color: #10b981; }
-.kpi-icon-fechamento { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.kpi-icon-turmas { background: rgba(2, 132, 199, 0.1); color: #0284c7; }
+.kpi-icon-alunos { background: rgba(59,130,246,0.1); color: #3b82f6; }
+.kpi-icon-concluidas { background: rgba(16,185,129,0.1); color: #10b981; }
+.kpi-icon-fechamento { background: rgba(245,158,11,0.1); color: #f59e0b; }
 
 .kpi-info {
   display: flex;
@@ -199,16 +195,16 @@
 }
 
 .kpi-value {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--text-main);
   line-height: 1;
 }
 
 .kpi-label {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--text-muted);
-  margin-top: 3px;
+  margin-top: 2px;
   font-weight: 500;
 }
 
@@ -217,8 +213,8 @@
 .coord-tabs {
   display: flex;
   gap: 4px;
-  border-bottom: 2px solid var(--border-color);
-  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 28px;
 }
 
 .coord-tab-btn {
@@ -240,7 +236,7 @@
 }
 
 .coord-tab-btn:hover { color: var(--text-main); background: var(--bg-card-subtle); }
-.coord-tab-btn.active { color: #c3161c; border-bottom-color: #c3161c; }
+.coord-tab-btn.active { color: #0284c7; border-bottom-color: #0284c7; }
 
 .coord-tab-panel { display: none; }
 .coord-tab-panel.active { display: block; }
@@ -424,8 +420,8 @@
 /* ─── BANNER "SOLICITAR FECHAMENTO" (visível para docente) ─────────────────── */
 
 .coord-docente-fechamento-banner {
-  background: linear-gradient(135deg, rgba(195,22,28,0.08), rgba(195,22,28,0.03));
-  border: 1px solid rgba(195,22,28,0.2);
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.08), rgba(2, 132, 199, 0.03));
+  border: 1px solid rgba(2, 132, 199, 0.2);
   border-radius: 12px;
   padding: 18px 20px;
   display: flex;
@@ -462,7 +458,7 @@
   font-size: 7px;
   font-weight: 900;
   letter-spacing: 0.5px;
-  background: #c3161c;
+  background: #0284c7;
   color: white;
   padding: 1px 4px;
   border-radius: 3px;
@@ -544,8 +540,8 @@
 
 .coord-course-selector-bar {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
   margin-bottom: 20px;
 }
 
@@ -553,7 +549,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  padding: 14px 16px;
+  padding: 12px 14px;
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -562,15 +558,15 @@
 }
 
 .coord-course-pill:hover {
-  border-color: rgba(195, 22, 28, 0.4);
+  border-color: rgba(2, 132, 199, 0.4);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .coord-course-pill.active {
-  border-color: #c3161c;
-  background: linear-gradient(135deg, rgba(195, 22, 28, 0.08), rgba(195, 22, 28, 0.02));
-  box-shadow: 0 4px 16px rgba(195, 22, 28, 0.15);
+  border-color: #0284c7;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.08), rgba(2, 132, 199, 0.02));
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.15);
 }
 
 .coord-course-pill.active::before {
@@ -580,14 +576,14 @@
   left: 0;
   bottom: 0;
   width: 4px;
-  background: #c3161c;
+  background: #0284c7;
 }
 
 .coord-course-pill .pill-code {
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.5px;
-  color: #c3161c;
+  color: #0284c7;
   margin-bottom: 4px;
 }
 
@@ -617,8 +613,8 @@
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 1px;
-  color: #c3161c;
-  background: rgba(195, 22, 28, 0.1);
+  color: #0284c7;
+  background: rgba(2, 132, 199, 0.1);
   padding: 2px 6px;
   border-radius: 4px;
   margin-bottom: 6px;
@@ -678,7 +674,7 @@
   letter-spacing: 0.5px;
   padding: 3px 8px;
   border-radius: 12px;
-  background: #c3161c;
+  background: #0284c7;
   color: white;
 }
 
@@ -729,8 +725,8 @@
 }
 
 .coord-uc-turmas-title .count-pill {
-  background: rgba(195, 22, 28, 0.1);
-  color: #c3161c;
+  background: rgba(2, 132, 199, 0.1);
+  color: #0284c7;
   padding: 1px 7px;
   border-radius: 10px;
   font-size: 11px;
@@ -755,7 +751,7 @@
 }
 
 .coord-turma-card:hover {
-  border-color: rgba(195, 22, 28, 0.3);
+  border-color: rgba(2, 132, 199, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
@@ -795,12 +791,46 @@
   font-weight: 700;
 }
 
-/* Painel de Síntese da Turma */
+/* Painel de Síntese da Turma (box completo — mantido para compatibilidade) */
 .turma-sintese-box {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 12px;
+}
+
+/* Síntese Compacta Inline (novo — sem box extra aninhado) */
+.turma-sintese-inline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  text-align: center;
+  padding: 10px 0 4px;
+  border-top: 1px solid var(--border-color);
+}
+
+.sintese-inline-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.sintese-inline-item.kpi-alerta .kpi-num {
+  color: #dc2626 !important;
+}
+
+.sintese-inline-item .kpi-num {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.sintese-inline-item .kpi-txt {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .sintese-box-title {
@@ -868,4 +898,124 @@
   flex: 1;
   font-size: 11.5px;
   padding: 7px 10px;
+}
+
+
+/* =============================================================================
+   COORDENADOR - MOBILE RESPONSIVENESS
+   ============================================================================= */
+@media (max-width: 768px) {
+  .coord-readonly-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .coord-readonly-back-btn {
+    align-self: flex-end;
+  }
+
+  .coord-docente-fechamento-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+
+  .coord-uc-body {
+    padding: 14px;
+  }
+
+  .uc-header-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .uc-header-right {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .sintese-kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .turma-card-actions {
+    flex-direction: column;
+  }
+
+  .turma-card-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .coord-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .coord-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .coord-portal-header {
+    margin-bottom: 16px;
+  }
+
+  .coord-course-pill {
+    padding: 10px 12px;
+  }
+
+  .coord-course-pill .pill-name {
+    font-size: 12px;
+  }
+
+  .coord-uc-header {
+    padding: 10px 12px;
+  }
+
+  .coord-uc-body {
+    padding: 10px 12px;
+  }
+
+  .coord-fechamento-card {
+    padding: 14px;
+  }
+}
+
+
+/* =============================================================================
+ * TEMA OFICIAL DA COORDENAÇÃO — AZUL PETRÓLEO (#0284C7)
+ * ============================================================================= */
+#tabSection_coordenador {
+  --primary: #0284c7;
+  --primary-hover: #0369a1;
+  --senai-red: #0284c7;
+}
+
+#tabSection_coordenador .btn-primary {
+  background: #0284c7 !important;
+  border-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+#tabSection_coordenador .btn-primary:hover {
+  background: #0369a1 !important;
+  border-color: #0369a1 !important;
+}
+
+#tabSection_coordenador .coord-tab-btn.active {
+  color: #0284c7 !important;
+  border-bottom-color: #0284c7 !important;
+}
+
+#sidebarCoordSection .nav-item.active {
+  background: rgba(2, 132, 199, 0.15) !important;
+  color: #38bdf8 !important;
+  border-left-color: #0284c7 !important;
 }

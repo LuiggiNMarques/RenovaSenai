@@ -1,0 +1,384 @@
+/**
+ * =============================================================================
+ * RENOVA SENAI - SISTEMA GLOBAL DE ANIMAÇÕES & MICRO-INTERAÇÕES
+ * animations.css
+ *
+ * Características:
+ * - Curva de aceleração natural: cubic-bezier(0.16, 1, 0.3, 1)
+ * - Duração ágil e responsiva: 150ms a 320ms
+ * - Propriedades performáticas otimizadas para GPU (transform e opacity)
+ * - Suporte completo à acessibilidade (@media prefers-reduced-motion: reduce)
+ * =============================================================================
+ */
+
+/* ─── VARIÁVEIS GLOBAIS DE ANIMAÇÃO ─────────────────────────────────────── */
+:root {
+  --anim-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --anim-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --anim-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --anim-dur-fast: 160ms;
+  --anim-dur-base: 240ms;
+  --anim-dur-smooth: 320ms;
+}
+
+/* ─── 1. TRANSIÇÃO DE CONTEÚDO E ROTAS (SEÇÕES PRINCIPAIS) ──────────────── */
+/*
+ * IMPORTANTE: Usar APENAS a classe .section-entering (adicionada via JS em
+ * app.js > navegarPara). NÃO usar seletores amplos como :not([style*="display: none"])
+ * ou .active pois isso anima todas as seções no carregamento inicial.
+ */
+@keyframes routeFadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tab-view-section.section-entering {
+  animation: routeFadeSlideIn var(--anim-dur-base) var(--anim-ease-out) forwards;
+  will-change: opacity, transform;
+}
+
+/* Sub-views internas — apenas quando a classe .section-entering for adicionada via JS */
+.coord-tab-panel.section-entering {
+  animation: routeFadeSlideIn var(--anim-dur-fast) var(--anim-ease-out) forwards;
+  will-change: opacity, transform;
+}
+
+/* ─── 2. ENTRADA EM CASCATA (STAGGER) ─────────────────────────────────────── */
+@keyframes staggerFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Linhas de tabelas acadêmicas (histórico de PDF, boletins, diário, frequências) */
+.senai-data-table tbody tr,
+.aluno-hist-table tbody tr,
+.relatorios-table tbody tr,
+#historicoRelatoriosBody tr,
+#subturmaTableBodyFigma tr,
+#alunoNotasTbody tr {
+  animation: staggerFadeUp var(--anim-dur-base) var(--anim-ease-out) both;
+  will-change: opacity, transform;
+}
+
+/* Atrasos escalonados de 30ms entre itens */
+tbody tr:nth-child(1)  { animation-delay: 20ms; }
+tbody tr:nth-child(2)  { animation-delay: 50ms; }
+tbody tr:nth-child(3)  { animation-delay: 80ms; }
+tbody tr:nth-child(4)  { animation-delay: 110ms; }
+tbody tr:nth-child(5)  { animation-delay: 140ms; }
+tbody tr:nth-child(6)  { animation-delay: 170ms; }
+tbody tr:nth-child(7)  { animation-delay: 200ms; }
+tbody tr:nth-child(8)  { animation-delay: 230ms; }
+tbody tr:nth-child(9)  { animation-delay: 260ms; }
+tbody tr:nth-child(10) { animation-delay: 290ms; }
+tbody tr:nth-child(n+11) { animation-delay: 320ms; }
+
+/* Lista de Turmas / UCs do Professor */
+.ucs-list .ucs-item-row {
+  animation: staggerFadeUp var(--anim-dur-base) var(--anim-ease-out) both;
+  will-change: opacity, transform;
+}
+.ucs-list .ucs-item-row:nth-child(1) { animation-delay: 30ms; }
+.ucs-list .ucs-item-row:nth-child(2) { animation-delay: 70ms; }
+.ucs-list .ucs-item-row:nth-child(3) { animation-delay: 110ms; }
+.ucs-list .ucs-item-row:nth-child(4) { animation-delay: 150ms; }
+
+/* Cards de KPIs e estatísticas (Coordenação) */
+.coord-kpi-card {
+  animation: staggerFadeUp var(--anim-dur-base) var(--anim-ease-out) both;
+  will-change: opacity, transform;
+}
+.coord-kpi-card:nth-child(1) { animation-delay: 30ms; }
+.coord-kpi-card:nth-child(2) { animation-delay: 70ms; }
+.coord-kpi-card:nth-child(3) { animation-delay: 110ms; }
+
+/* Cards estruturais e filtros */
+.subturma-figma-card,
+.aluno-course-card,
+.compensacao-filters-card,
+.prof-greeting-card,
+.diario-figma-topbar {
+  animation: staggerFadeUp var(--anim-dur-smooth) var(--anim-ease-out) both;
+  will-change: opacity, transform;
+}
+
+/* ─── 3. BARRA LATERAL (SIDEBAR) & CABEÇALHO ────────────────────────────── */
+/* Itens de navegação da Sidebar */
+.sidebar-nav .nav-item {
+  position: relative;
+  transition: transform var(--anim-dur-fast) var(--anim-ease-out),
+              background-color var(--anim-dur-fast) var(--anim-ease-out),
+              color var(--anim-dur-fast) var(--anim-ease-out),
+              box-shadow var(--anim-dur-fast) var(--anim-ease-out);
+  will-change: transform;
+}
+
+.sidebar-nav .nav-item:hover {
+  transform: translateX(4px);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-nav .nav-item:active {
+  transform: scale(0.97) translateX(2px);
+}
+
+/* Indicador de item ativo na sidebar */
+.sidebar-nav .nav-item.active {
+  transition: all var(--anim-dur-base) var(--anim-ease-out);
+}
+
+.sidebar-nav .nav-item.active::before {
+  transition: transform var(--anim-dur-base) var(--anim-ease-out), opacity var(--anim-dur-fast) ease;
+  transform: scaleY(1);
+}
+
+/* Botão de notificações (sino) */
+.header-action-btn {
+  transition: transform var(--anim-dur-fast) var(--anim-ease-out),
+              background-color var(--anim-dur-fast) ease;
+  will-change: transform;
+}
+
+.header-action-btn:hover {
+  transform: scale(1.08);
+}
+
+.header-action-btn:active {
+  transform: scale(0.94);
+}
+
+/* Ponto pulsante de notificação pendente */
+.notification-badge {
+  animation: badgeSoftPulse 2.4s infinite ease-in-out;
+  transform-origin: center;
+}
+
+@keyframes badgeSoftPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.28);
+    opacity: 0.85;
+  }
+}
+
+/* Dropdown de usuário no cabeçalho — APENAS chevron e trigger */
+/* O menu em si (display:none/block) é controlado pelo professor-home.css */
+.user-dropdown-trigger {
+  transition: background-color var(--anim-dur-fast) ease,
+              transform var(--anim-dur-fast) var(--anim-ease-out),
+              box-shadow var(--anim-dur-fast) ease;
+  will-change: transform;
+}
+
+.user-dropdown-trigger:active {
+  transform: scale(0.98);
+}
+
+.user-dropdown-chevron {
+  transition: transform var(--anim-dur-fast) var(--anim-ease-out);
+}
+
+.user-dropdown-wrap.open .user-dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+/* Items do dropdown */
+.user-dropdown-item {
+  transition: background-color var(--anim-dur-fast) ease,
+              transform var(--anim-dur-fast) var(--anim-ease-out),
+              color var(--anim-dur-fast) ease;
+  will-change: transform;
+}
+
+.user-dropdown-item:hover {
+  transform: translateX(4px);
+}
+
+.user-dropdown-item:active {
+  transform: scale(0.98) translateX(2px);
+}
+
+/* ─── 4. BOTÕES E FORMULÁRIOS (MICRO-INTERAÇÕES) ────────────────────────── */
+button,
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-gerar-relatorio,
+.btn-limpar-azul,
+.btn-senai-submit,
+.btn-criar-subturma,
+.btn-consultar-azul,
+.btn-hist-view,
+.btn-hist-dl,
+.coord-tab-btn,
+.aluno-freq-tab-button,
+.tab-btn {
+  transition: transform var(--anim-dur-fast) var(--anim-ease-out),
+              box-shadow var(--anim-dur-fast) var(--anim-ease-out),
+              background-color var(--anim-dur-fast) ease,
+              border-color var(--anim-dur-fast) ease,
+              opacity var(--anim-dur-fast) ease;
+  will-change: transform;
+}
+
+/* Hover: leve elevação com sombra suave */
+.btn-primary:hover,
+.btn-gerar-relatorio:hover,
+.btn-senai-submit:hover,
+.btn-criar-subturma:hover,
+.btn-consultar-azul:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.btn-secondary:hover,
+.btn-limpar-azul:hover,
+.btn-hist-view:hover,
+.btn-hist-dl:hover {
+  transform: translateY(-1px);
+}
+
+/* Feedback tátil ao pressionar */
+button:active,
+.btn:active,
+.btn-primary:active,
+.btn-secondary:active,
+.btn-gerar-relatorio:active,
+.btn-limpar-azul:active,
+.btn-senai-submit:active,
+.btn-criar-subturma:active,
+.btn-consultar-azul:active,
+.btn-hist-view:active,
+.btn-hist-dl:active {
+  transform: scale(0.98) translateY(0) !important;
+}
+
+/* Inputs, Selects e Textareas */
+input[type="text"],
+input[type="password"],
+input[type="date"],
+select,
+textarea,
+.form-control-clean,
+.filter-select,
+.filter-select-modern,
+.subturma-search-input {
+  transition: border-color var(--anim-dur-fast) var(--anim-ease-out),
+              box-shadow var(--anim-dur-fast) var(--anim-ease-out),
+              background-color var(--anim-dur-fast) ease,
+              transform var(--anim-dur-fast) var(--anim-ease-out);
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.form-control-clean:focus,
+.filter-select:focus,
+.filter-select-modern:focus,
+.subturma-search-input:focus {
+  transform: translateY(-0.5px);
+  border-color: #c3161c;
+  box-shadow: 0 0 0 3px rgba(195, 22, 28, 0.12);
+  outline: none;
+}
+
+/* ─── 5. MODAIS E FEEDBACKS (TOASTS) ─────────────────────────────────────── */
+/*
+ * APENAS anima a caixa interna (.modal-box) com transform.
+ * O backdrop/overlay já tem seu próprio sistema de display em components.css e login.css.
+ * NÃO sobrescrever display:none/flex com opacity/visibility nesses containers.
+ */
+@keyframes modalBoxPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Modal de componentes genéricos */
+.modal-overlay.open .modal-box {
+  animation: modalBoxPopIn var(--anim-dur-smooth) var(--anim-ease-out) forwards;
+  will-change: opacity, transform;
+}
+
+/* Modal de PDF */
+.pdf-modal-overlay:not(.hidden) .pdf-modal-box {
+  animation: modalBoxPopIn var(--anim-dur-smooth) var(--anim-ease-out) forwards;
+  will-change: opacity, transform;
+}
+
+/* Login modal card */
+.login-modal-backdrop.open .login-modal-card,
+.login-modal-backdrop.modal-active .login-modal-card {
+  animation: modalBoxPopIn var(--anim-dur-smooth) var(--anim-ease-out) forwards;
+  will-change: opacity, transform;
+}
+
+/* Botão Fechar Modal */
+.btn-close-modal,
+.login-modal-close {
+  transition: transform var(--anim-dur-fast) var(--anim-ease-out),
+              background-color var(--anim-dur-fast) ease,
+              color var(--anim-dur-fast) ease;
+  will-change: transform;
+}
+
+.btn-close-modal:hover,
+.login-modal-close:hover {
+  transform: rotate(90deg) scale(1.1);
+}
+
+.btn-close-modal:active,
+.login-modal-close:active {
+  transform: scale(0.9);
+}
+
+/* Notificações Toasts Flutuantes */
+@keyframes toastSlideEnter {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.toast-container .toast-item {
+  animation: toastSlideEnter var(--anim-dur-base) var(--anim-ease-out) forwards;
+  will-change: opacity, transform;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* ─── 6. ACESSIBILIDADE (PREFERS-REDUCED-MOTION) ─────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,873 @@
+/* =============================================================================
+   RENOVA SENAI - TELA DE SELEÇÃO DE PERFIL PÓS-LOGIN
+   Perfis: Coordenação, Professor, Aluno, Orientador
+   Inspirado no Design Oficial SENAI / Imagem de Referência
+   ============================================================================= */
+
+/* Container Principal de Seleção de Perfil */
+.profile-select-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-app);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  font-family: var(--font-family);
+  animation: fadeInProfileSelect 0.25s ease-out;
+}
+
+@keyframes fadeInProfileSelect {
+  from {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Faixa Azul Superior Oficial */
+.profile-select-top-bar {
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #0056b3 0%, #0070ba 50%, #0088cc 100%);
+  flex-shrink: 0;
+}
+
+/* Wrapper Centralizador */
+.profile-select-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+}
+
+/* Card Branco Central com Borda Suave */
+.profile-select-card {
+  width: 100%;
+  max-width: 980px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 40px 48px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s ease;
+}
+
+[data-theme="dark"] .profile-select-card {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Cabeçalho da Tela */
+.profile-select-header {
+  margin-bottom: 28px;
+  text-align: left;
+}
+
+.profile-select-greeting {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.4px;
+}
+
+.profile-select-subtitle {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Grid com os 4 Cards de Perfil */
+.profile-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 34px;
+}
+
+/* Card Individual de Perfil */
+.profile-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  padding: 28px 18px 24px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 230px;
+}
+
+.profile-card:hover {
+  border-color: #94a3b8;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Indicador de Rádio no Canto Superior Direito */
+.profile-radio-circle {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #cbd5e1;
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.profile-radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: none;
+  transition: transform 0.15s ease;
+}
+
+/* Ícone Circular Central */
+.profile-icon-box {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  transition: transform 0.2s ease;
+}
+
+.profile-card:hover .profile-icon-box {
+  transform: scale(1.06);
+}
+
+/* Variação Azul (Coordenação, Professor, Orientador) */
+.profile-card.theme-blue .profile-icon-box {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+[data-theme="dark"] .profile-card.theme-blue .profile-icon-box {
+  background-color: rgba(2, 132, 199, 0.2);
+  color: #38bdf8;
+}
+
+/* Variação Vermelha (Aluno) */
+.profile-card.theme-red .profile-icon-box {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+[data-theme="dark"] .profile-card.theme-red .profile-icon-box {
+  background-color: rgba(220, 38, 38, 0.2);
+  color: #f87171;
+}
+
+/* Título do Card */
+.profile-card-title {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 8px 0;
+}
+
+/* Descrição do Card */
+.profile-card-desc {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0;
+  max-width: 190px;
+}
+
+/* =============================================================================
+   ESTADOS SELECIONADOS (IGUAL À IMAGEM DE REFERÊNCIA)
+   ============================================================================= */
+
+/* 1. Seleção Azul (Professor, Coordenação, Orientador) */
+.profile-card.selected-blue {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 1.5px #0284c7, 0 6px 20px rgba(2, 132, 199, 0.15);
+  background-color: #e0f2fe;
+}
+
+[data-theme="dark"] .profile-card.selected-blue {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1.5px #38bdf8, 0 6px 20px rgba(56, 189, 248, 0.15);
+  background-color: rgba(2, 132, 199, 0.18);
+}
+
+.profile-card.selected-blue .profile-radio-circle {
+  border-color: #0284c7;
+  background: #ffffff;
+}
+
+[data-theme="dark"] .profile-card.selected-blue .profile-radio-circle {
+  border-color: #38bdf8;
+  background: #0f172a;
+}
+
+.profile-card.selected-blue .profile-radio-dot {
+  display: block;
+  background-color: #0284c7;
+}
+
+[data-theme="dark"] .profile-card.selected-blue .profile-radio-dot {
+  background-color: #38bdf8;
+}
+
+/* 2. Seleção Vermelha (Aluno - idêntica à imagem Figma) */
+.profile-card.selected-red {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 1.5px #dc2626, 0 6px 20px rgba(220, 38, 38, 0.15);
+  background-color: #fee2e2;
+}
+
+[data-theme="dark"] .profile-card.selected-red {
+  border-color: #f87171;
+  box-shadow: 0 0 0 1.5px #f87171, 0 6px 20px rgba(248, 113, 113, 0.15);
+  background-color: rgba(220, 38, 38, 0.18);
+}
+
+.profile-card.selected-red .profile-radio-circle {
+  border-color: #dc2626;
+  background: #ffffff;
+}
+
+[data-theme="dark"] .profile-card.selected-red .profile-radio-circle {
+  border-color: #f87171;
+  background: #0f172a;
+}
+
+.profile-card.selected-red .profile-radio-dot {
+  display: block;
+  background-color: #dc2626;
+}
+
+[data-theme="dark"] .profile-card.selected-red .profile-radio-dot {
+  background-color: #f87171;
+}
+
+/* Botão de Ação Vermelho SENAI */
+.profile-select-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-profile-enter {
+  width: 100%;
+  max-width: 380px;
+  height: 48px;
+  background-color: #cc0000;
+  color: #ffffff;
+  font-size: 15.5px;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(204, 0, 0, 0.25);
+  letter-spacing: 0.2px;
+}
+
+.btn-profile-enter:hover {
+  background-color: #b30000;
+  box-shadow: 0 6px 18px rgba(204, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-profile-enter:active {
+  transform: translateY(0);
+}
+
+/* Botão Secundário para Sair / Trocar de Usuário */
+.btn-profile-back {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-profile-back:hover {
+  color: var(--text-main);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .btn-profile-back:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Botão no Header do Portal para Trocar de Perfil a Qualquer Momento */
+.btn-header-switch-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background-color: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 8px;
+}
+
+[data-theme="dark"] .btn-header-switch-profile {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.btn-header-switch-profile:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  border-color: #94a3b8;
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .btn-header-switch-profile:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #64748b;
+}
+
+.btn-header-switch-profile svg {
+  color: #0056b3;
+}
+
+[data-theme="dark"] .btn-header-switch-profile svg {
+  color: #38bdf8;
+}
+
+/* =============================================================================
+   ESTILOS DO PORTAL DO ALUNO E PORTAL DO ORIENTADOR
+   ============================================================================= */
+
+/* Banner de Identificação do Aluno */
+.aluno-header-banner {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.aluno-banner-info h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+}
+
+.aluno-banner-info p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.aluno-banner-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.aluno-tag-pill {
+  background: rgba(255, 255, 255, 0.18);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+}
+
+/* Banner de Identificação do Orientador */
+.orientador-header-banner {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.orientador-banner-info h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+}
+
+.orientador-banner-info p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+/* Grid de Métricas de Resumo */
+.aluno-metrics-grid,
+.orientador-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.aluno-metric-card,
+.orientador-metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.aluno-metric-val,
+.orientador-metric-val {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.aluno-metric-lbl,
+.orientador-metric-lbl {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+/* Cartões de Projetos do Orientador */
+.orientador-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.project-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.project-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.project-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 4px 0;
+}
+
+.project-card-members {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.project-progress-wrap {
+  margin: 12px 0 16px 0;
+}
+
+.project-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+}
+
+.project-progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--bg-app);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.project-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #0d9488, #14b8a6);
+}
+
+.project-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+  .profile-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .aluno-metrics-grid,
+  .orientador-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .orientador-projects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 540px) {
+  .profile-select-card {
+    padding: 24px 18px;
+  }
+
+  .profile-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .aluno-header-banner,
+  .orientador-header-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .aluno-metrics-grid,
+  .orientador-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ucs-item-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .ucs-item-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* =============================================================================
+   RENOVA SENAI - TELA DE MINHAS UNIDADES CURRICULARES (PORTAL DO PROFESSOR)
+   Idêntico à Imagem de Referência
+   ============================================================================= */
+
+.ucs-page-wrapper {
+  padding: 10px 0 30px 0;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.ucs-page-header {
+  margin-bottom: 24px;
+}
+
+.ucs-main-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.ucs-main-subtitle {
+  font-size: 14.5px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Card Principal "Turmas Atuais" */
+.ucs-section-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 26px 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 20px;
+}
+
+[data-theme="dark"] .ucs-section-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.ucs-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.ucs-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 4px 0;
+}
+
+.ucs-card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.ucs-count-pill {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .ucs-count-pill {
+  background-color: rgba(29, 78, 216, 0.25);
+  color: #60a5fa;
+}
+
+/* Lista de UCs / Turmas */
+.ucs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Linha / Card de cada Turma */
+.ucs-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ucs-item-row:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.1);
+  transform: translateY(-1.5px);
+}
+
+[data-theme="dark"] .ucs-item-row:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 4px 16px rgba(96, 165, 250, 0.15);
+}
+
+.ucs-item-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ucs-item-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background-color: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+[data-theme="dark"] .ucs-item-icon {
+  background-color: rgba(37, 99, 235, 0.18);
+  color: #60a5fa;
+}
+
+.ucs-item-row:hover .ucs-item-icon {
+  transform: scale(1.08);
+}
+
+.ucs-item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.ucs-item-name {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 3px 0;
+}
+
+.ucs-item-meta {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.ucs-item-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-role-docente {
+  background-color: #eff6ff;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 14px;
+}
+
+[data-theme="dark"] .badge-role-docente {
+  background-color: rgba(37, 99, 235, 0.2);
+  color: #93c5fd;
+}
+
+.badge-periodo {
+  background-color: #f1f5f9;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 14px;
+}
+
+[data-theme="dark"] .badge-periodo {
+  background-color: #242932;
+  color: #cbd5e1;
+}
+
+.ucs-item-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-card-subtle);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.ucs-item-row:hover .ucs-item-arrow {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* Acordeom "Histórico de Turmas" */
+.ucs-history-accordion {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.ucs-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.ucs-history-header:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="dark"] .ucs-history-header:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.ucs-history-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ucs-history-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.06);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="dark"] .ucs-history-icon {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.ucs-history-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 2px 0;
+}
+
+.ucs-history-desc {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.ucs-history-chevron {
+  color: var(--text-muted);
+  transition: transform 0.25s ease;
+}
+
+.ucs-history-accordion.open .ucs-history-chevron {
+  transform: rotate(180deg);
+}
+
+.ucs-history-body {
+  padding: 16px 20px 20px 20px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+

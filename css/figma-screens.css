@@ -1,0 +1,2186 @@
+/* =============================================================================
+   PORTAL ACADÊMICO SENAI - TELAS OFICIAIS DO FIGMA (figma-screens.css)
+   - Portal do Aluno (Dashboard, Frequência Geral, Histórico de Aulas, Notas & Boletim)
+   - Compensação de Ausência (Orientador e Coordenação)
+   - Diário de Classe (Frequência P/F/J por Aula & Conteúdo PTD)
+   - Compensação de Faltas (Professor)
+   - Criar Subturma
+   - Fechamento do Diário
+   ============================================================================= */
+
+/* --- Variáveis e Tokens --- */
+:root {
+  --senai-blue-gradient: linear-gradient(135deg, #0b192c 0%, #1e3a8a 60%, #1d4ed8 100%);
+  --senai-blue-card: #0f2347;
+  --senai-badge-green: #dcfce7;
+  --senai-badge-green-text: #15803d;
+  --senai-badge-red: #fee2e2;
+  --senai-badge-red-text: #b91c1c;
+  --senai-badge-yellow: #fef9c3;
+  --senai-badge-yellow-text: #a16207;
+  --senai-badge-gray: #f1f5f9;
+  --senai-badge-gray-text: #475569;
+}
+
+/* =============================================================================
+   1. PORTAL DO ALUNO (YASMIN DOS SANTOS)
+   ============================================================================= */
+
+/* Banner de Boas-Vindas do Aluno */
+.aluno-figma-banner {
+  background: linear-gradient(135deg, #0b192c 0%, #172554 45%, #1e3a8a 100%);
+  border-radius: 12px;
+  padding: 24px 28px 0 28px;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(11, 25, 44, 0.25);
+  margin-bottom: 24px;
+}
+
+.aluno-figma-banner-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 20px;
+}
+
+.aluno-figma-banner-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: #ffffff;
+}
+
+.aluno-figma-banner-sub {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0;
+}
+
+.aluno-figma-banner-bgimg {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 320px;
+  object-fit: cover;
+  opacity: 0.35;
+  mask-image: linear-gradient(to right, transparent, black);
+  -webkit-mask-image: linear-gradient(to right, transparent, black);
+  pointer-events: none;
+}
+
+.aluno-figma-banner-footer {
+  background: rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 10px 16px;
+  margin: 0 -28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.aluno-figma-banner-footer-sep {
+  opacity: 0.4;
+}
+
+/* Cards de Acesso Rápido do Aluno */
+.aluno-figma-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.aluno-figma-quick-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  text-align: left;
+  width: 100%;
+}
+
+.aluno-figma-quick-card:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.aluno-figma-quick-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.aluno-figma-quick-icon.blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.aluno-figma-quick-icon.orange {
+  background: #ffedd5;
+  color: #ea580c;
+}
+
+.aluno-figma-quick-info {
+  flex: 1;
+}
+
+.aluno-figma-quick-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+}
+
+.aluno-figma-quick-desc {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.aluno-figma-quick-arrow {
+  color: #94a3b8;
+}
+
+/* Barra de Navegação Interna do Aluno (Frequência e Notas) */
+.aluno-figma-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 24px;
+}
+
+.aluno-figma-tab-btn {
+  padding: 10px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #64748b;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aluno-figma-tab-btn:hover {
+  color: #0f172a;
+}
+
+.aluno-figma-tab-btn.active {
+  color: #0284c7;
+  border-bottom-color: #0284c7;
+}
+
+/* Header de Curso e Status Ativo */
+.aluno-course-header-bar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.aluno-course-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aluno-course-header-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #e0f2fe;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aluno-course-header-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.aluno-course-header-sub {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.badge-matricula-ativa {
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Frequência do Aluno - Visão Geral */
+.aluno-freq-overview-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.aluno-freq-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.aluno-freq-counter {
+  font-size: 38px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.aluno-freq-counter-sub {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.badge-taxa-faltas {
+  display: inline-block;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.aluno-recent-absences-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #334155;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.aluno-recent-absence-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+  color: #475569;
+}
+
+/* Tabela de Percentuais de Frequência por UC */
+.freq-pct-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+.freq-pct-badge.green {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.freq-pct-badge.yellow {
+  background: #fef9c3;
+  color: #a16207;
+}
+
+.freq-pct-badge.red {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Frequência do Aluno - Histórico de Aulas (4 Métricas) */
+.aluno-metrics-bar-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.aluno-metric-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.aluno-metric-box-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.aluno-metric-box-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.aluno-metric-box-lbl {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* Boletim Escolar Cards (Ano Letivo 2025, 2026) */
+.boletim-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.boletim-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.boletim-card-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.boletim-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: #e0f2fe;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.boletim-card-year {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+}
+
+.boletim-card-class {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 0;
+}
+
+.btn-download-boletim {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.btn-download-boletim:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+/* =============================================================================
+   2. COMPENSAÇÃO DE AUSÊNCIA (ORIENTADOR & COORDENAÇÃO - OFICIAL FIGMA)
+   ============================================================================= */
+
+.orientador-view-canvas {
+  position: relative;
+  padding-bottom: 40px;
+}
+
+/* Breadcrumb Superior */
+.orientador-breadcrumb {
+  margin-bottom: 12px;
+}
+
+.btn-breadcrumb-back {
+  background: none;
+  border: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #1e293b;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  font-family: inherit;
+}
+
+.btn-breadcrumb-back:hover {
+  color: #2563eb;
+}
+
+/* Header Box com Ícone Roxo em Quadrado Arredondado */
+.compensacao-header-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.compensacao-header-icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+.compensacao-header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.compensacao-page-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 3px 0;
+  letter-spacing: -0.01em;
+}
+
+.compensacao-page-sub {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Barra de Filtros com Botão Consultar Azul Escuro */
+.compensacao-filters-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 1fr auto;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.filter-field-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #475569;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.filter-select-modern {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 13.5px;
+  color: #1e293b;
+  background-color: #ffffff;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.filter-select-modern:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn-consultar-azul {
+  height: 40px;
+  background: #1d4ed8;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0 24px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.25);
+  white-space: nowrap;
+}
+
+.btn-consultar-azul:hover {
+  background: #1e40af;
+  transform: translateY(-1px);
+}
+
+/* Card da Tabela de Alunos */
+.compensacao-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.compensacao-card-header {
+  padding: 16px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+  background: #ffffff;
+}
+
+.compensacao-table-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.compensacao-table-title .title-accent-bar {
+  width: 3.5px;
+  height: 18px;
+  background: #7c3aed;
+  border-radius: 2px;
+}
+
+.badge-alunos-count {
+  background: #ede9fe;
+  color: #7c3aed;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 9999px;
+}
+
+/* Tabela com Cabeçalho Roxo Escuro / Navy */
+.compensacao-grid-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.compensacao-grid-table thead tr {
+  background: #1e1346 !important;
+}
+
+.compensacao-grid-table thead th {
+  padding: 12px 18px;
+  color: #ffffff !important;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  border: none;
+  white-space: nowrap;
+}
+
+.compensacao-grid-table thead th .sort-icon {
+  margin-left: 4px;
+  vertical-align: middle;
+  opacity: 0.8;
+}
+
+.compensacao-grid-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease;
+}
+
+.compensacao-grid-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.compensacao-grid-table tbody td {
+  padding: 13px 18px;
+  font-size: 13px;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.compensacao-grid-table .col-matricula {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.compensacao-grid-table .col-nome {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+/* Badge Frequência Vermelha Arredondada */
+.badge-freq-red {
+  display: inline-block;
+  background: #fee2e2;
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+/* Badges de Status de Compensação (Pill Shape) */
+.badge-comp-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-comp-status.nao-registrado {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.badge-comp-status.em-andamento {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.badge-comp-status.registrado {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* Botões de Ação Roxos (Registrar / Visualizar) */
+.btn-acao-purple {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ede9fe;
+  color: #6d28d9;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.btn-acao-purple:hover {
+  background: #ddd6fe;
+  color: #5b21b6;
+  transform: translateY(-1px);
+}
+
+/* Tag de Perfil no Header do Canvas */
+.canvas-header-role-tag {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  border-left: 1.5px solid #cbd5e1;
+  padding-left: 12px;
+  height: 18px;
+}
+
+/* Onda Fluida Suave na Base do Canvas */
+.compensacao-bottom-wave {
+  margin-top: 36px;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  border-radius: 0 0 16px 16px;
+}
+
+.compensacao-bottom-wave svg {
+  width: 100%;
+  height: 80px;
+  display: block;
+}
+
+/* =============================================================================
+   3. BOTÕES DE CHAMADA P / F / J (DIÁRIO DE CLASSE)
+   ============================================================================= */
+
+.chamada-btn-group {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.btn-pfj {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.btn-pfj.btn-p {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #16a34a;
+}
+
+.btn-pfj.btn-p.active {
+  background: #16a34a;
+  border-color: #15803d;
+  color: #ffffff;
+}
+
+.btn-pfj.btn-f {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.btn-pfj.btn-f.active {
+  background: #dc2626;
+  border-color: #b91c1c;
+  color: #ffffff;
+}
+
+.btn-pfj.btn-j {
+  background: #fefce8;
+  border-color: #fef08a;
+  color: #ca8a04;
+}
+
+.btn-pfj.btn-j.active {
+  background: #ca8a04;
+  border-color: #a16207;
+  color: #ffffff;
+}
+
+/* =============================================================================
+   4. DIÁRIO DE CLASSE (OFICIAL FIGMA - FREQUÊNCIA E CONTEÚDO)
+   ============================================================================= */
+
+.diario-figma-topbar,
+.notas-figma-topbar,
+.sintese-figma-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.diario-figma-titlebox,
+.notas-figma-titlebox,
+.sintese-figma-titlebox {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.diario-figma-icon,
+.notas-figma-icon,
+.sintese-figma-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notas-figma-icon {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.sintese-figma-icon {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.diario-figma-title,
+.notas-figma-title,
+.sintese-figma-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.diario-figma-uc,
+.notas-figma-uc,
+.sintese-figma-uc {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 2px 0 0 0;
+}
+
+.diario-figma-turmabar,
+.notas-figma-turmabar,
+.sintese-figma-turmabar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 12.5px;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.diario-figma-sep {
+  opacity: 0.35;
+}
+
+/* Abas de Navegação Sub-visual */
+.diario-figma-tabs,
+.notas-figma-tabs,
+.sintese-figma-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+}
+
+.diario-tab-btn,
+.notas-tab-btn,
+.sintese-tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.diario-tab-btn:hover,
+.notas-tab-btn:hover,
+.sintese-tab-btn:hover {
+  color: #0f172a;
+}
+
+.diario-tab-btn.active,
+.notas-tab-btn.active,
+.sintese-tab-btn.active {
+  color: #0284c7;
+  border-bottom-color: #0284c7;
+}
+
+.notas-tab-btn.active {
+  color: #0284c7;
+  border-bottom-color: #0284c7;
+}
+
+.sintese-tab-btn.active {
+  color: #16a34a;
+  border-bottom-color: #16a34a;
+}
+
+/* Controles de Frequência */
+.diario-freq-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+}
+
+.diario-freq-controls-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.diario-date-picker-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.diario-date-picker-wrap .date-icon {
+  position: absolute;
+  left: 12px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.diario-date-input {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 12px 8px 36px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0f172a;
+  outline: none;
+  background: #f8fafc;
+  cursor: pointer;
+}
+
+.diario-aulas-info {
+  font-size: 13px;
+  color: #475569;
+}
+
+.diario-subturma-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.diario-select-clean {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+  cursor: pointer;
+}
+
+.btn-marcar-todos {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-marcar-todos:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Card e Tabela do Diário */
+.diario-table-card,
+.notas-table-card,
+.sintese-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.diario-figma-table,
+.notas-figma-table,
+.sintese-figma-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.diario-figma-table thead,
+.notas-figma-table thead,
+.sintese-figma-table thead {
+  background: #0b2559;
+  color: #ffffff;
+}
+
+.diario-figma-table thead th,
+.notas-figma-table thead th,
+.sintese-figma-table thead th {
+  padding: 12px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border-bottom: none;
+}
+
+.diario-figma-table tbody td,
+.notas-figma-table tbody td,
+.sintese-figma-table tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+  color: #1e293b;
+}
+
+.diario-figma-table tbody tr:hover,
+.notas-figma-table tbody tr:hover,
+.sintese-figma-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.aula-time {
+  font-size: 10.5px;
+  font-weight: 400;
+  opacity: 0.8;
+  display: block;
+}
+
+/* Célula do Aluno com Foto/Avatar */
+.aluno-cell-figma {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aluno-avatar-figma {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.aluno-nome-figma {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Botões de Presença como Pílulas Arredondadas (✓ P / F ✕) */
+.btn-aula-toggle {
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-aula-toggle.presente {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.btn-aula-toggle.falta {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.btn-aula-toggle.justificada {
+  background: #d97706;
+  color: #ffffff;
+}
+
+.btn-aula-toggle:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Botão de Ocorrência na Linha */
+.btn-ocorrencia-table {
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-ocorrencia-table:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+/* Rodapés */
+.diario-table-footer,
+.notas-table-footer,
+.sintese-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.diario-footer-info {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.diario-footer-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* CONTEÚDO MINISTRADO */
+.diario-content-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.btn-ptd-link {
+  color: #0284c7;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-ptd-link:hover {
+  background: #e0f2fe;
+}
+
+.diario-card-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px 0;
+}
+
+.diario-radio-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+}
+
+.form-group-clean {
+  margin-bottom: 18px;
+}
+
+.field-label-clean {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.form-control-clean {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 13.5px;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+}
+
+.textarea-clean {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13.5px;
+  color: #0f172a;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.char-counter {
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
+.btn-consultar-historico {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0284c7;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-consultar-historico:hover {
+  background: #f0f9ff;
+  border-color: #93c5fd;
+}
+
+/* =============================================================================
+   5. AVALIAÇÕES E NOTAS (OFICIAL FIGMA)
+   ============================================================================= */
+
+.notas-filters-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+}
+
+.notas-search-input {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  min-width: 220px;
+  outline: none;
+}
+
+.notas-filter-pill {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-nova-avaliacao-figma {
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-nova-avaliacao-figma:hover {
+  background: #0369a1;
+}
+
+.notas-input-field {
+  width: 60px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 6px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.resumo-stats-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #475569;
+}
+
+.resumo-stats-item strong {
+  color: #0f172a;
+}
+
+/* =============================================================================
+   6. SÍNTESE DO PROFESSOR (OFICIAL FIGMA)
+   ============================================================================= */
+
+.sintese-summary-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  font-size: 13px;
+  color: #475569;
+}
+
+/* Responsividade Geral das Novas Telas */
+@media (max-width: 900px) {
+  .aluno-figma-quick-grid,
+  .aluno-freq-overview-grid,
+  .aluno-metrics-bar-4,
+  .boletim-cards-grid,
+  .compensacao-filters-card,
+  .diario-figma-topbar,
+  .notas-figma-topbar,
+  .sintese-figma-topbar {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+
+/* =============================================================================
+   7. CRIAR SUBTURMA (OFICIAL FIGMA)
+   ============================================================================= */
+.subturma-figma-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.subturma-figma-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #e0f2fe;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.subturma-figma-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+.subturma-figma-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+.section-indicator-blue {
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: #0284c7;
+  border-radius: 2px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.subturma-figma-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.subturma-periodo-box {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+}
+.subturma-periodo-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: #e0f2fe;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.subturma-periodo-details {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+}
+.subturma-count-pill {
+  background: #e0f2fe;
+  color: #0284c7;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.subturma-search-input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 9px 12px 9px 36px;
+  font-size: 13px;
+  box-sizing: border-box;
+  outline: none;
+  background: #ffffff;
+}
+.table-senai-header thead {
+  background: #0284c7;
+  color: #ffffff;
+}
+.table-senai-header thead th {
+  padding: 11px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: none;
+}
+.table-senai-header tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13.5px;
+  vertical-align: middle;
+}
+.btn-criar-subturma {
+  background: #16a34a;
+  border: 1px solid #15803d;
+  color: #ffffff;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+.btn-criar-subturma:hover {
+  background: #15803d;
+}
+
+/* =============================================================================
+   8. RELATÓRIOS OFICIAIS (OFICIAL FIGMA)
+   ============================================================================= */
+.relatorios-figma-grid {
+  display: block;
+  width: 100%;
+}
+.relatorios-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.relatorio-action-btn {
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.relatorio-action-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+.btn-limpar-azul {
+  background: #ffffff;
+  border: 1px solid #bae6fd;
+  color: #0284c7;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-limpar-azul:hover {
+  background: #f0f9ff;
+}
+.btn-gerar-relatorio {
+  background: #16a34a;
+  border: 1px solid #15803d;
+  color: #ffffff;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+.btn-gerar-relatorio:hover {
+  background: #15803d;
+}
+
+/* =============================================================================
+   9. ASSISTENTE DE IA (OFICIAL FIGMA - DARK CONTAINER)
+   ============================================================================= */
+.assistente-figma-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 24px;
+  color: #f8fafc;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.assistente-topbar-figma {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #1e293b;
+  margin-bottom: 20px;
+}
+.groq-connected-badge {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.llama-model-pill {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 8px;
+}
+.assistente-chat-stream {
+  min-height: 240px;
+  max-height: 380px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.bot-msg-box {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  max-width: 90%;
+}
+.bot-avatar-blue {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #0284c7;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.bot-msg-text {
+  font-size: 13.5px;
+  color: #f1f5f9;
+  line-height: 1.5;
+}
+.bot-msg-time {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 6px;
+}
+.assistente-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.chip-ai-btn {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 12.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+.chip-ai-btn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+.chip-ai-btn.active {
+  background: #0284c7;
+  border-color: #0284c7;
+  color: #ffffff;
+}
+.assistente-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 6px 10px;
+}
+.assistente-input-text {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 13.5px;
+  outline: none;
+  padding: 8px;
+}
+.assistente-input-text::placeholder {
+  color: #64748b;
+}
+.btn-enviar-ai {
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-enviar-ai:hover {
+  background: #0369a1;
+}
+
+/* =============================================================================
+   10. PERFIL E CONFIGURAÇÕES DO ALUNO (YASMIN DOS SANTOS)
+   ============================================================================= */
+.aluno-perfil-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.aluno-header-banner-profile {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.aluno-avatar-large-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.aluno-avatar-large {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #64748b;
+}
+.aluno-avatar-camera-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #0284c7;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  cursor: pointer;
+}
+.aluno-grid-3cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.aluno-grid-2cols {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.btn-salvar-azul {
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 13.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-salvar-azul:hover {
+  background: #0369a1;
+}
+
+/* Configurações do Aluno */
+.aluno-config-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.aluno-config-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.aluno-config-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #e0f2fe;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.aluno-config-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+.aluno-config-sub {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 2px 0 0 0;
+}
+.aluno-toggles-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.aluno-toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #334155;
+  font-weight: 600;
+}
+.switch-simple {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+.switch-simple input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider-simple {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1;
+  transition: .2s;
+  border-radius: 22px;
+}
+.slider-simple:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .2s;
+  border-radius: 50%;
+}
+.switch-simple input:checked + .slider-simple {
+  background-color: #0284c7;
+}
+.switch-simple input:checked + .slider-simple:before {
+  transform: translateX(18px);
+}
+.theme-selector-aluno {
+  display: flex;
+  gap: 16px;
+}
+.theme-pill-option {
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  transition: all 0.15s ease;
+}
+.theme-pill-option.active {
+  border-color: #0284c7;
+  background: #f0f9ff;
+  color: #0284c7;
+}
+
+/* =============================================================================
+   NOTAS - SUB-ABA MÉDIAS (FIGMA)
+   ============================================================================= */
+
+.notas-medias-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+}
+
+.notas-medias-controls > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-recalcular-medias {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-recalcular-medias:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Tabela Azul SENAI (substitui roxa) */
+.table-senai-header thead {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.table-senai-header thead th {
+  padding: 11px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: none;
+}
+
+.table-senai-header tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13.5px;
+  vertical-align: middle;
+}
+
+/* Tabela Verde SENAI */
+.table-green-header thead {
+  background: #064e3b;
+  color: #ffffff;
+}
+
+.table-green-header thead th {
+  padding: 11px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: none;
+}
+
+.table-green-header tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13.5px;
+  vertical-align: middle;
+}
+
+/* Tabela Vermelha SENAI (para compensação) */
+.table-red-header thead {
+  background: #b91c1c;
+  color: #ffffff;
+}
+
+.table-red-header thead th {
+  padding: 11px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: none;
+}
+
+.table-red-header tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13.5px;
+  vertical-align: middle;
+}
+
+/* Pílulas de Situação (Aprovado/Reprovado) */
+.badge-situacao {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badge-situacao.aprovado {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge-situacao.reprovado {
+  background: #fee2e2;
+  color: #e30613;
+}
+
+/* Input de Média do Professor */
+.media-professor-input {
+  width: 70px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  color: #0f172a;
+  outline: none;
+  background: #f8fafc;
+}
+
+.media-professor-input:focus {
+  border-color: #0284c7;
+  background: #ffffff;
+}
+
+/* Cards de Compensação */
+.compensacao-table-card,
+.compensacao-form-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.compensacao-table-card h3,
+.compensacao-form-card h3 {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+/* Form controls clean */
+.form-control-clean {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 13.5px;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-control-clean:focus {
+  border-color: #0284c7;
+}
+
+.textarea-clean {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13.5px;
+  color: #0f172a;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+/* Notas footer actions */
+.notas-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.notas-table-footer .diario-footer-actions {
+  display: flex;
+  gap: 10px;
+}

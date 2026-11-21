@@ -1,209 +1,287 @@
 /**
  * =============================================================================
  * RENOVA SENAI - MÓDULO DE COMPENSAÇÕES (compensacoes.js)
- * Controle de Obrigações geradas por 5 atrasos ou faltas e registro de cumprimento
+ * Figma Oficial: Grid 2 colunas - Esquerda: Alunos <75% (tabela roxa), Direita: Form Registrar Compensação
  * =============================================================================
  */
 
 class CompensacoesController {
   constructor() {
-    this.filtroTipo = 'TODOS'; // 'TODOS', 'ATRASOS', 'FALTAS'
+    this.filtroTipo = 'TODOS';
+    this.turmaId = 1;
+    this.ucId = 1;
+    this.alunosBaixaFrequencia = [];
   }
 
   init() {
+    if (window.app && window.app.turmaAtiva) {
+      this.turmaId = window.app.turmaAtiva.id || 1;
+      this.ucId = window.app.turmaAtiva.ucId || 1;
+    }
     this.renderizar();
   }
 
   renderizar() {
-    const tbody = document.getElementById('compensacoesTableBody');
-    if (!tbody) return;
-
-    let lista = window.db.getCompensacoes();
+    // Renderizar tabela da esquerda (alunos com frequência < 75%)
+    this.renderizarAlunosBaixaFrequencia();
     
-    // Aplicar filtro
-    if (this.filtroTipo === 'ATRASOS') {
-      lista = lista.filter(c => c.tipoOrigem === 'ATRASOS' || c.motivoOrigem.includes('atrasos'));
-    } else if (this.filtroTipo === 'FALTAS') {
-      lista = lista.filter(c => c.tipoOrigem === 'FALTAS' || c.motivoOrigem.includes('Frequência abaixo'));
+    // Popular selects do formulário da direita
+    this.popularFormularioCompensacao();
+  }
+
+  renderizarAlunosBaixaFrequencia() {
+    const tbody = document.querySelector('#compensacaoAlunosTable tbody');
+    if (!tbody || !window.db) return;
+
+    // Buscar síntese consolidada da turma e UC atual
+    const sintese = window.db.getSinteseConsolidada(this.turmaId, this.ucId);
+    let alunosCriticos = (sintese.alunos || []).filter(item => 
+      item.aluno.statusMatricula === 'ATIVO' && item.freqPorcentagem < 75.0
+    ).map(item => ({
+      id: item.aluno.id,
+      nome: item.aluno.nome,
+      ra: item.aluno.ra,
+      pct: item.freqPorcentagem,
+      faltas: item.faltas
+    }));
+
+    // Se nenhum aluno estiver abaixo de 75% na UC atual, busca em todas as UCs da turma para garantir acompanhamento
+    if (alunosCriticos.length === 0) {
+      const ucs = window.db.getUCsPorTurma(this.turmaId);
+      const mapCriticos = new Map();
+      ucs.forEach(uc => {
+        const s = window.db.getSinteseConsolidada(this.turmaId, uc.id);
+        (s.alunos || []).forEach(item => {
+          if (item.aluno.statusMatricula === 'ATIVO' && item.freqPorcentagem < 75.0) {
+            if (!mapCriticos.has(item.aluno.id) || item.freqPorcentagem < mapCriticos.get(item.aluno.id).pct) {
+              mapCriticos.set(item.aluno.id, {
+                id: item.aluno.id,
+                nome: item.aluno.nome,
+                ra: item.aluno.ra,
+                pct: item.freqPorcentagem,
+                faltas: item.faltas
+              });
+            }
+          }
+        });
+      });
+      alunosCriticos = Array.from(mapCriticos.values());
     }
 
-    tbody.innerHTML = lista.map(c => {
-      const isAtrasos = c.tipoOrigem === 'ATRASOS' || c.motivoOrigem.includes('atrasos');
-      const isFaltas = c.tipoOrigem === 'FALTAS' || c.motivoOrigem.includes('Frequência abaixo');
-      const tipoBadge = isFaltas 
-        ? '<span class="portal-tag-pill" style="background:#fee2e2; color:#991b1b; font-size:10px;"> FALTAS</span>'
-        : '<span class="portal-tag-pill" style="background:#fef3c7; color:#b45309; font-size:10px;"> ATRASOS</span>';
-      
-      return `
-        <tr class="${isFaltas ? 'row-freq-critical' : ''}">
-          <td><strong>${c.alunoNome}</strong></td>
-          <td>
-            ${tipoBadge}
-            <div style="font-weight:600; margin-top:4px;">${c.motivoOrigem}</div>
-            <div style="font-size:11.5px; color:var(--text-muted);">Carga: <strong>${c.horasObrigacao} horas</strong> &bull; Prazo Limite: ${c.dataLimite}</div>
-          </td>
-          <td>
-            ${c.status === 'PENDENTE' 
-              ? '<span class="delays-warning-chip" style="font-size:12px;"> PENDENTE</span>' 
-              : '<span style="color:#16a34a; font-weight:700; font-size:12px;"> CUMPRIDA</span>'}
-          </td>
-          <td>
-            <div style="font-size:12.5px;">${c.atividadeDescricao || 'Atividade a definir'}</div>
-            ${c.dataCumprimento ? `<div style="font-size:11px; color:#16a34a;">Cumprida em: ${c.dataCumprimento}</div>` : ''}
-          </td>
-          <td style="text-align: right;">
-            ${c.status === 'PENDENTE' ? `
-              <button type="button" class="btn btn-sm btn-primary" onclick="window.compensacoesController.abrirModalCumprimento(${c.id})">
-                Registrar Cumprimento
-              </button>
-            ` : `
-              <span style="font-size:12px; color:var(--text-muted);">Homologado</span>
-            `}
+    this.alunosBaixaFrequencia = alunosCriticos;
+
+    if (alunosCriticos.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3" style="text-align: center; padding: 24px; color: #16a34a; font-size: 13px;">
+            ✅ Nenhum aluno da turma com frequência inferior a 75%.
           </td>
         </tr>
       `;
-    }).join('');
+      return;
+    }
 
-    // Renderizar filtros se não existirem
-    this.renderizarFiltros();
+    tbody.innerHTML = alunosCriticos.map((aluno, idx) => `
+      <tr style="cursor: pointer;" onclick="window.compensacoesController.selecionarAlunoCompensacao(${aluno.id})">
+        <td><strong>${idx + 1}</strong></td>
+        <td>${aluno.nome}</td>
+        <td style="text-align: center;">
+          <span class="badge-situacao reprovado">${aluno.pct.toFixed(1)}%</span>
+        </td>
+      </tr>
+    `).join('');
   }
 
-  renderizarFiltros() {
-    const headerRow = document.querySelector('#tabSection_compensacoes .section-header-row');
-    if (!headerRow || headerRow.querySelector('.compensacoes-filtro')) return;
+  popularFormularioCompensacao() {
+    const alunoSelect = document.getElementById('compAlunoSelect');
+    const faltaSelect = document.getElementById('compFaltaSelect');
+    const dataInput = document.getElementById('compDataInput');
 
-    const filtroHtml = `
-      <div class="compensacoes-filtro" style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-        <button type="button" class="btn btn-sm ${this.filtroTipo === 'TODOS' ? 'btn-primary' : 'btn-outline'}" 
-          onclick="window.compensacoesController.setFiltro('TODOS')">Todas</button>
-        <button type="button" class="btn btn-sm ${this.filtroTipo === 'ATRASOS' ? 'btn-primary' : 'btn-outline'}" 
-          onclick="window.compensacoesController.setFiltro('ATRASOS')" style="border-color:#fcd34d; color:#b45309;">
-          <span class="portal-tag-pill" style="background:#fef3c7; color:#b45309; padding:0 8px;"> Atrasos</span>
-        </button>
-        <button type="button" class="btn btn-sm ${this.filtroTipo === 'FALTAS' ? 'btn-primary' : 'btn-outline'}" 
-          onclick="window.compensacoesController.setFiltro('FALTAS')" style="border-color:#fca5a5; color:#991b1b;">
-          <span class="portal-tag-pill" style="background:#fee2e2; color:#991b1b; padding:0 8px;"> Faltas</span>
-        </button>
-      </div>
-    `;
-    
-    headerRow.insertAdjacentHTML('beforeend', filtroHtml);
+    if (alunoSelect) {
+      alunoSelect.innerHTML = '<option value="">Selecione o aluno...</option>' +
+        this.alunosBaixaFrequencia.map(a => 
+          `<option value="${a.id}">${a.nome} (${a.pct.toFixed(1)}%)</option>`
+        ).join('');
+      
+      // Ao trocar de aluno, popula faltas reais
+      alunoSelect.onchange = (e) => {
+        this.carregarFaltasAluno(e.target.value);
+      };
+    }
+
+    if (faltaSelect) {
+      faltaSelect.innerHTML = '<option value="">Selecione primeiro o aluno...</option>';
+    }
+
+    if (dataInput) {
+      const hoje = new Date().toISOString().split('T')[0];
+      dataInput.value = hoje;
+      dataInput.min = hoje;
+    }
   }
 
-  setFiltro(tipo) {
-    this.filtroTipo = tipo;
-    this.renderizar();
-  }
+  carregarFaltasAluno(alunoId) {
+    const faltaSelect = document.getElementById('compFaltaSelect');
+    if (!faltaSelect) return;
 
-  // [Alteração 6]: Métodos para inserção e definição manual de compensação pelo professor
-  carregarAlunosParaModalCompensacao() {
-    const sel = document.getElementById('selectNovaCompensacaoAluno');
-    if (!sel) return;
+    if (!alunoId) {
+      faltaSelect.innerHTML = '<option value="">Selecione primeiro o aluno...</option>';
+      return;
+    }
 
-    // Obtém alunos ativos de todas as turmas em andamento
-    const turmas = window.db.getTurmas('EM_ANDAMENTO');
-    let optionsHtml = '';
-    turmas.forEach(t => {
-      const alunosTurma = window.db.getAlunosPorTurma(t.id).filter(a => a.statusMatricula === 'ATIVO');
-      if (alunosTurma.length) {
-        optionsHtml += `<optgroup label="${t.codigo} - ${t.nome}">`;
-        alunosTurma.forEach(a => {
-          optionsHtml += `<option value="${a.id}">${a.nome} (${a.ra}) - Subturma ${a.subturma}</option>`;
-        });
-        optionsHtml += `</optgroup>`;
+    const idNum = Number(alunoId);
+    const aulas = (window.db && window.db.data.aulas) || [];
+    const aulasTurma = aulas.filter(a => a.turmaId === Number(this.turmaId));
+
+    const faltasEncontradas = [];
+    aulasTurma.forEach(aula => {
+      if (aula.frequencias && aula.frequencias[idNum]) {
+        const qtdFaltas = aula.frequencias[idNum].filter(st => st === 'F').length;
+        if (qtdFaltas > 0) {
+          const uc = window.db.getUCById(aula.ucId);
+          const ucNome = uc ? uc.nome : 'UC';
+          faltasEncontradas.push({
+            data: aula.data,
+            qtd: qtdFaltas,
+            ucNome,
+            conteudo: aula.conteudoMinistrado || 'Aula regular'
+          });
+        }
       }
     });
 
-    sel.innerHTML = optionsHtml;
+    if (faltasEncontradas.length === 0) {
+      faltaSelect.innerHTML = '<option value="Falta geral registrada">Falta geral registrada (4 aulas)</option>';
+      return;
+    }
+
+    faltaSelect.innerHTML = '<option value="">Selecione a falta...</option>' +
+      faltasEncontradas.map(f => 
+        `<option value="${f.data}">Aula em ${f.data} (${f.qtd} falta${f.qtd > 1 ? 's' : ''}) - ${f.ucNome}</option>`
+      ).join('');
   }
 
-  abrirModalNovaCompensacao() {
-    this.carregarAlunosParaModalCompensacao();
-    
-    // Configura data limite padrão para 20 dias à frente
-    const dataLimite = new Date();
-    dataLimite.setDate(dataLimite.getDate() + 20);
-    const inputData = document.getElementById('inputNovaCompensacaoDataLimite');
-    if (inputData) inputData.value = dataLimite.toISOString().split('T')[0];
-
-    const inputHoras = document.getElementById('inputNovaCompensacaoHoras');
-    if (inputHoras) inputHoras.value = '2';
-
-    const inputMotivo = document.getElementById('inputNovaCompensacaoMotivo');
-    if (inputMotivo) inputMotivo.value = '';
-
-    const textDesc = document.getElementById('textNovaCompensacaoDescricao');
-    if (textDesc) textDesc.value = '';
-
-    window.app.abrirModal('modalNovaCompensacao');
+  selecionarAlunoCompensacao(alunoId) {
+    const alunoSelect = document.getElementById('compAlunoSelect');
+    if (alunoSelect) {
+      alunoSelect.value = String(alunoId);
+      this.carregarFaltasAluno(alunoId);
+    }
   }
 
-  salvarNovaCompensacao() {
-    if (window.auth && window.auth.isCoordenacao()) {
-      window.app.mostrarToast('Ação bloqueada: a Coordenação atua exclusivamente em Modo Observador.', 'warning');
-      return;
-    }
-    const alunoId = document.getElementById('selectNovaCompensacaoAluno')?.value;
-    const horas = document.getElementById('inputNovaCompensacaoHoras')?.value;
-    const dataLimite = document.getElementById('inputNovaCompensacaoDataLimite')?.value;
-    const motivo = document.getElementById('inputNovaCompensacaoMotivo')?.value;
-    const atividadeDescricao = document.getElementById('textNovaCompensacaoDescricao')?.value;
+  limparFormCompensacao() {
+    const form = document.getElementById('formRegistrarCompensacao');
+    if (form) form.reset();
+    this.popularFormularioCompensacao();
+    window.app.mostrarToast('Formulário limpo.', 'info');
+  }
 
-    if (!alunoId) {
-      window.app.mostrarToast('Selecione um aluno para definir a compensação.', 'warning');
+  salvarCompensacaoForm() {
+    const alunoIdVal = document.getElementById('compAlunoSelect')?.value;
+    const faltaData = document.getElementById('compFaltaSelect')?.value;
+    const data = document.getElementById('compDataInput')?.value;
+    const obs = document.getElementById('compObsTextarea')?.value;
+
+    if (!alunoIdVal) {
+      window.app.mostrarToast('Selecione um aluno.', 'warning');
       return;
     }
-    if (!horas || Number(horas) <= 0) {
-      window.app.mostrarToast('Informe a carga horária a ser compensada.', 'warning');
+    if (!faltaData) {
+      window.app.mostrarToast('Selecione a falta a compensar.', 'warning');
       return;
     }
-    if (!dataLimite) {
-      window.app.mostrarToast('Informe a data limite para cumprimento.', 'warning');
+    if (!data) {
+      window.app.mostrarToast('Informe a data da compensação.', 'warning');
       return;
     }
-    if (!motivo) {
-      window.app.mostrarToast('Descreva o motivo da obrigação de compensação.', 'warning');
+    if (!obs || obs.trim().length < 5) {
+      window.app.mostrarToast('Descreva a atividade de reposição (mín. 5 caracteres).', 'warning');
       return;
     }
 
-    // [Alteração 6]: Compensação inserida e definida manualmente pelo professor
-    window.db.addCompensacao({
-      alunoId: Number(alunoId),
-      horasObrigacao: Number(horas),
-      dataLimite,
-      motivoOrigem: motivo,
-      atividadeDescricao: atividadeDescricao || 'Atividade prescrita pelo professor.',
-      tipoOrigem: 'MANUAL'
+    const alunoIdReal = Number(alunoIdVal);
+    const aluno = window.db.getAlunoById(alunoIdReal);
+
+    // Converter as faltas da data selecionada de 'F' para 'J' (Justificada / Compensada)
+    const aulas = (window.db && window.db.data.aulas) || [];
+    let convertidas = 0;
+    aulas.forEach(aula => {
+      if (aula.turmaId === Number(this.turmaId) && aula.frequencias && aula.frequencias[alunoIdReal]) {
+        if (!faltaData || aula.data === faltaData || faltaData === 'Falta geral registrada' || faltaData.includes(aula.data)) {
+          aula.frequencias[alunoIdReal] = aula.frequencias[alunoIdReal].map(status => {
+            if (status === 'F') {
+              convertidas++;
+              return 'J';
+            }
+            return status;
+          });
+        }
+      }
     });
 
-    window.app.fecharModal('modalNovaCompensacao');
-    window.app.mostrarToast('Compensação manual definida com sucesso pelo professor!', 'success');
-    this.renderizar();
-  }
-
-  abrirModalCumprimento(compId) {
-    document.getElementById('inputCompensacaoId').value = compId;
-    window.app.abrirModal('modalRegistrarCompensacao');
-  }
-
-  salvarCumprimento() {
-    if (window.auth && window.auth.isCoordenacao()) {
-      window.app.mostrarToast('Ação bloqueada: a Coordenação atua exclusivamente em Modo Observador.', 'warning');
-      return;
-    }
-    const compId = document.getElementById('inputCompensacaoId').value;
-    const desc = document.getElementById('textCompensacaoRelato').value;
-
-    if (!desc) {
-      window.app.mostrarToast('Descreva a atividade realizada pelo aluno.', 'warning');
-      return;
+    // Fallback: se não encontrou pela data exata, compensa na primeira aula com falta
+    if (convertidas === 0) {
+      for (let i = 0; i < aulas.length; i++) {
+        const aula = aulas[i];
+        if (aula.turmaId === Number(this.turmaId) && aula.frequencias && aula.frequencias[alunoIdReal]) {
+          if (aula.frequencias[alunoIdReal].includes('F')) {
+            aula.frequencias[alunoIdReal] = aula.frequencias[alunoIdReal].map(s => s === 'F' ? 'J' : s);
+            convertidas++;
+            break;
+          }
+        }
+      }
     }
 
-    window.db.registrarCompensacaoCumprida(compId, desc);
-    window.app.fecharModal('modalRegistrarCompensacao');
-    window.app.mostrarToast('Compensação registrada e homologada com sucesso!', 'success');
+    // Salvar no banco central via window.db com status HOMOLOGADO
+    window.db.addCompensacao({
+      alunoId: alunoIdReal,
+      alunoNome: aluno ? aluno.nome : 'Aluno',
+      turmaId: this.turmaId,
+      horasObrigacao: 4,
+      dataLimite: data,
+      motivoOrigem: `Compensação de falta: Aula de ${faltaData}`,
+      atividadeDescricao: obs,
+      tipoOrigem: 'FALTAS',
+      status: 'HOMOLOGADO'
+    });
+
+    if (window.db && typeof window.db.adicionarNotificacao === 'function') {
+      window.db.adicionarNotificacao(
+        'INFO',
+        `Compensação de Falta • ${aluno ? aluno.nome : 'Aluno'}`,
+        `Atividade de reposição homologada. Faltas convertidas em compensadas (J) com recálculo imediato de presença.`,
+        'Docente Responsável'
+      );
+    }
+
+    if (window.db && window.db.persist) {
+      window.db.persist();
+    }
+    window.dispatchEvent(new CustomEvent('renova:db-updated'));
+
+    // Sincronizar demais controllers
+    if (window.diarioController && typeof window.diarioController.init === 'function') {
+      window.diarioController.init();
+    }
+    if (window.sinteseController && typeof window.sinteseController.renderizar === 'function') {
+      window.sinteseController.renderizar();
+    }
+    if (window.app && typeof window.app.renderizarNotasAluno === 'function') {
+      window.app.renderizarNotasAluno();
+    }
+
+    this.limparFormCompensacao();
     this.renderizar();
+    window.app.mostrarToast(`Compensação registrada! Faltas convertidas em presença compensada (J) e % recalculado.`, 'success');
   }
+
+  // Métodos legados para compatibilidade
+  renderizarFiltros() {}
+  setFiltro(tipo) {}
+  carregarAlunosParaModalCompensacao() {}
+  abrirModalNovaCompensacao() {}
+  salvarNovaCompensacao() {}
 }
 
 window.compensacoesController = new CompensacoesController();

@@ -26,7 +26,7 @@ class JustificativasController {
     tbody.innerHTML = lista.map(j => `
       <tr>
         <td><strong>${j.alunoNome}</strong></td>
-        <td><span class="justified-pill-badge"> ${j.tipo}</span></td>
+        <td><span class="justified-pill-badge">🏥 ${j.tipo}</span></td>
         <td>${j.dataInicio} até ${j.dataFim}</td>
         <td>
           <div style="font-weight:600;">${j.motivo}</div>
@@ -64,6 +64,11 @@ class JustificativasController {
       documento: 'comprovante_homologado_' + Date.now() + '.pdf',
       cadastradoPor: window.auth.getUser() ? window.auth.getUser().nome : 'COORDENAÇÃO PEDAGÓGICA'
     });
+
+    if (window.db && window.db.persist) {
+      window.db.persist();
+    }
+    window.dispatchEvent(new CustomEvent('renova:db-updated'));
 
     window.app.fecharModal('modalNovaJustificativa');
     window.app.mostrarToast('Justificativa cadastrada com sucesso! Faltas no período serão bloqueadas automaticamente.', 'success');
